@@ -56,9 +56,15 @@ public abstract class Entity {
 	}
 	
 	protected void setAnimation(int animIndex, int numSpritesPerAnim) {
+		int previousAnimIndex = this.animIndex;
 		System.out.println("Entity.setAnimation(): animIndex: " + animIndex + " | numSpritesPerAnim: " + numSpritesPerAnim);
 		this.animIndex = animIndex;
 		this.numSpritesPerAnim = numSpritesPerAnim;
+		if (this.animIndex == previousAnimIndex) {
+			frameIndex = 0;
+			animTick = 0;
+		}
+		
 	}
 	
 	protected void loadAnimations(String path, int rows, int columns, int sizeX, int sizeY) {

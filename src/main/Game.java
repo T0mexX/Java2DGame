@@ -17,7 +17,7 @@ public class Game implements Runnable{
 	public Game() {
 		player = new Player(0, 0);
 		gamePanel = new GamePanel(this);
-		gameWindow = new GameWindow(gamePanel);
+		gameWindow = new GameWindow(this, gamePanel);
 		gamePanel.requestFocus();
 		startGameLoop();
 	}
@@ -37,6 +37,10 @@ public class Game implements Runnable{
 	
 	public Player getPlayer() {
 		return player;
+	}
+	
+	public void windowFocusLost() {
+		player.clearAllInputs();
 	}
 	
 	@Override

@@ -15,7 +15,7 @@ public class Player extends Entity{
 	private float horizSpeed;
 	private float vertSpeed;
 
-	private boolean up, left, down, right;
+	private boolean up, left, down, right, mainAttack;
 	private PlayerAnimations currentAnimation = PlayerAnimations.IDLE;
 	
 	public Player(float x, float y) {
@@ -50,37 +50,31 @@ public class Player extends Entity{
 		
 	}
 	
+	public void setUp(boolean bool) {
+		up = bool;
+	}
 	
-	public void setLeft() {
-		left = true;
+	public void setLeft(boolean bool) {
+		left = bool;
 	}
 
-	public void setRight() {
-		right = true;
+	public void setDown(boolean bool) {
+		down = bool;
 	}
 	
-	public void setUp() {
-		up = true;
+	public void setRight(boolean bool) {
+		right = bool;
 	}
 	
-	public void setDown() {
-		down = true;
+	public void setMainAttack(boolean bool) {
+		mainAttack = bool;
 	}
-	
-	public void clearLeft() {
-		left = false;
-	}
-	
-	public void clearRight() {
-		right = false;
-	}
-	
-	public void clearUp() {
+
+	public void clearAllInputs() {
 		up = false;
-	}
-	
-	public void clearDown() {
+		left = false;
 		down = false;
+		right = false;
 	}
 	
 //	public void setMoving(int key) {
