@@ -9,7 +9,7 @@ import utils.Constants.Directions;
 public class KeyboardInputs implements KeyListener{
 	
 	private Game game;
-	private boolean up = false, left = false, down = false, right = false, space = false; 
+	private boolean up = false, left = false, down = false, right = false, space = false, lCtrl = false; 
 	private float x = 0, y = 0; 
 	
 	public KeyboardInputs(Game game) {
@@ -56,6 +56,12 @@ public class KeyboardInputs implements KeyListener{
 				game.getPlayer().setJump(true);
 				space = true;
 			}
+		case KeyEvent.VK_CONTROL:
+			if (!lCtrl) {
+				game.getPlayer().setCrouch(true);
+				System.out.println("crouch TRUE");
+				lCtrl = true;
+			}
 		}
 	}
 
@@ -83,6 +89,10 @@ public class KeyboardInputs implements KeyListener{
 		case KeyEvent.VK_SPACE:
 			game.getPlayer().setJump(false);
 			space = false;
+			break;
+		case KeyEvent.VK_CONTROL:
+			game.getPlayer().setCrouch(false);
+			lCtrl = false;
 			break;
 		}			
 	}

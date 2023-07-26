@@ -25,7 +25,7 @@ public class Game implements Runnable{
 	public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN__HEIGHT;
 	
 	public Game() {
-		player = new Player(0, 0);
+		player = new Player(0, 0, UPS);
 		gamePanel = new GamePanel(this);
 		gameWindow = new GameWindow(this, gamePanel);
 		levelManager = new LevelManager(this);
@@ -50,6 +50,14 @@ public class Game implements Runnable{
 	
 	public Player getPlayer() {
 		return player;
+	}
+	
+	public int getFPS() {
+		return FPS;
+	}
+	
+	public int getUPS() {
+		return UPS;
 	}
 	
 	public void windowFocusLost() {

@@ -4,11 +4,13 @@ package entities;
 
 import utils.Constants.PlayerData;
 import utils.Constants.PlayerData.PlayerAnimations;
+import main.Game;
 import utils.Constants.Directions;
 import utils.LoadSave;
 
 public class Player extends Entity{
 	
+	private final int UPS;
 	private static int rows = 5;
 	private static int columns = 4;
 	private static int imgSizeX = 32;
@@ -16,16 +18,18 @@ public class Player extends Entity{
 	private float horizSpeed;
 	private float vertSpeed;
 //	private Directions currentDirection = Directions.RIGHT;
-	private boolean up, left, down, right, jump, mainAttack;
+	private boolean up, left, down, right, jump, mainAttack, crouch;
+	private int crouchTimer = 0;
 	private PlayerAnimations currentAnimation = PlayerAnimations.IDLE;
 	
-	public Player(float x, float y) {
+	public Player(float x, float y, int UPS) {
 		super(x, y);
 		horizSpeed = PlayerData.HORIZ_SPEED;
 		vertSpeed = PlayerData.VERT_SPEED;
+		this.UPS = UPS;
 		
 		loadAnimations(LoadSave.PLAYER_ATLAS, rows, columns, imgSizeX, imgSizeY);
-		setAnimation(currentAnimation.value, PlayerData.GetSpriteAmount(currentAnimation), PlayerData.GetAnimDelta(currentAnimation));
+		setAnimation(currentAnimation.value, PlayerData.GetSpriteAmount(currentAnimation), PlayerData.GetAnimDuration(currentAnimation));
 		sizeX = 96;
 		sizeY = 96;
 	}
@@ -41,7 +45,7 @@ public class Player extends Entity{
 			y += +vertSpeed;
 //			currentAnimation = PlayerAnimations.RUNNING;
 		} 
-		else if (left && !right) {
+		if (left && !right) {
 			x += -horizSpeed;
 			currentAnimation = PlayerAnimations.RUNNING;
 			currentDirection = Directions.LEFT;
@@ -49,16 +53,23 @@ public class Player extends Entity{
 			x += horizSpeed;
 			currentAnimation = PlayerAnimations.RUNNING;
 			currentDirection = Directions.RIGHT;
-		}
-		else { 
-			if (jump) {
-				currentAnimation = PlayerAnimations.CHARGED_JUMP_HOLD;
+		} else { 
+			if (crouch) {
+				if (currentAnimation != PlayerAnimations.CHARGED_JUMP_HOLD) {
+					currentAnimation = PlayerAnimations.CHARGING_JUMP;
+					crouchTimer++;
+					if (crouchTimer >= PlayerData.GetAnimDuration(PlayerAnimations.CHARGING_JUMP)) {
+						crouchTimer = 0;
+						currentAnimation = PlayerAnimations.CHARGED_JUMP_HOLD;
+					} 					
+				}
 			} else {
+				crouchTimer = 0;
 				currentAnimation = PlayerAnimations.IDLE;				
 			}
 		}
 		if (currentAnimation != previousAnimation) {
-			setAnimation(currentAnimation.value, PlayerData.GetSpriteAmount(currentAnimation), PlayerData.GetAnimDelta(currentAnimation));
+			setAnimation(currentAnimation.value, PlayerData.GetSpriteAmount(currentAnimation), PlayerData.GetAnimDuration(currentAnimation));
 		}
 		updatePos(xDelta, yDelta);
 	}
@@ -93,6 +104,10 @@ public class Player extends Entity{
 	
 	public void setMainAttack(boolean bool) {
 		mainAttack = bool;
+	}
+	
+	public void setCrouch(boolean bool) {
+		crouch = bool;
 	}
 
 	public void clearAllInputs() {

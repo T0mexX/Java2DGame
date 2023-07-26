@@ -43,11 +43,11 @@ public class Constants {
 			case IDLE:
 				return 2;
 			case RUNNING:
-				return 3;
+				return 4;
 			case JUMP:
 				return 0;
 			case CHARGING_JUMP:
-				return 0;
+				return 4;
 			case CHARGED_JUMP_HOLD:
 				return 4;
 			case FALLING:
@@ -65,19 +65,19 @@ public class Constants {
 			}
 		}		
 		
-		public static int GetAnimDelta(PlayerAnimations player_action) {
-			switch (player_action) {
+		public static int GetAnimDuration(PlayerAnimations player_action) { //duration in s/120
+			switch (player_action) { //120 UPS
 			case IDLE:
-				return 60;
+				return 60; //2
 			case RUNNING:
-				return 20;
+				return 80; //4
 			case JUMP:
-				return 0;
-			case CHARGING_JUMP:
-				return 0;
-			case CHARGED_JUMP_HOLD:
-				return 30;
-			case FALLING:
+				return 0; //0
+			case CHARGING_JUMP: //4
+				return 40;
+			case CHARGED_JUMP_HOLD: //4
+				return 120;
+			case FALLING: 
 				return 0;
 			case GROUND:
 				return 0;

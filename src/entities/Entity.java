@@ -60,9 +60,10 @@ public abstract class Entity {
 		this.y = yDelta;
 	}
 	
-	protected void setAnimation(int animIndex, int numSpritesPerAnim, int animDelta) {
+	protected void setAnimation(int animIndex, int numSpritesPerAnim, int animDuration) {
 		int previousAnimIndex = this.animIndex;
-		this.animDelta = animDelta;
+		animDelta = animDuration / numSpritesPerAnim;
+		System.out.println("animDelta: " + animDelta);
 //		System.out.println("Entity.setAnimation(): animIndex: " + animIndex + " | numSpritesPerAnim: " + numSpritesPerAnim);
 		this.animIndex = animIndex;
 		this.numSpritesPerAnim = numSpritesPerAnim;
