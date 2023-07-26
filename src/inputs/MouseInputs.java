@@ -14,7 +14,7 @@ public class MouseInputs implements MouseListener, MouseMotionListener{
 	public MouseInputs(Game game) {
 		this.game = game;
 	}
-
+	
 	@Override
 	public void mouseDragged(MouseEvent e) {
 	}

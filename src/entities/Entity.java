@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
+import utils.Constants.Directions;
 import utils.LoadSave;
 
 
@@ -15,6 +16,7 @@ public abstract class Entity {
 	protected BufferedImage[][] animations;
 	private int animTick, animIndex, frameIndex, animDelta = 20;
 	private int numSpritesPerAnim = 1;
+	protected Directions currentDirection = Directions.RIGHT; //default: right
 	
 	public Entity(float x, float y) {
 		this.x = x;
@@ -27,7 +29,11 @@ public abstract class Entity {
 	
 	public void render(Graphics g) {
 		Toolkit.getDefaultToolkit().sync();
-		g.drawImage(animations[animIndex][frameIndex], (int)x, (int)y, (int)sizeX, (int)sizeY, null);
+		if (currentDirection == Directions.LEFT) {
+			g.drawImage(animations[animIndex][frameIndex], (int)(x + sizeX), (int)y, (int)-sizeX, (int)sizeY, null);			
+		} else {
+			g.drawImage(animations[animIndex][frameIndex], (int)x, (int)y, (int)sizeX, (int)sizeY, null);
+		}
 	}
 	
 	protected void updateAnimationTick() {
@@ -57,7 +63,7 @@ public abstract class Entity {
 	protected void setAnimation(int animIndex, int numSpritesPerAnim, int animDelta) {
 		int previousAnimIndex = this.animIndex;
 		this.animDelta = animDelta;
-		System.out.println("Entity.setAnimation(): animIndex: " + animIndex + " | numSpritesPerAnim: " + numSpritesPerAnim);
+//		System.out.println("Entity.setAnimation(): animIndex: " + animIndex + " | numSpritesPerAnim: " + numSpritesPerAnim);
 		this.animIndex = animIndex;
 		this.numSpritesPerAnim = numSpritesPerAnim;
 		if (this.animIndex != previousAnimIndex) {

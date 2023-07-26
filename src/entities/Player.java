@@ -4,6 +4,7 @@ package entities;
 
 import utils.Constants.PlayerData;
 import utils.Constants.PlayerData.PlayerAnimations;
+import utils.Constants.Directions;
 import utils.LoadSave;
 
 public class Player extends Entity{
@@ -14,7 +15,7 @@ public class Player extends Entity{
 	private static int imgSizeY = 32;
 	private float horizSpeed;
 	private float vertSpeed;
-
+//	private Directions currentDirection = Directions.RIGHT;
 	private boolean up, left, down, right, jump, mainAttack;
 	private PlayerAnimations currentAnimation = PlayerAnimations.IDLE;
 	
@@ -35,17 +36,19 @@ public class Player extends Entity{
 		float xDelta = 0, yDelta = 0;
 		if (up && !down) {
 			y += -vertSpeed;
-			currentAnimation = PlayerAnimations.RUNNING;
+//			currentAnimation = PlayerAnimations.RUNNING;
 		} else if (down && !up) {
 			y += +vertSpeed;
-			currentAnimation = PlayerAnimations.RUNNING;
+//			currentAnimation = PlayerAnimations.RUNNING;
 		} 
 		else if (left && !right) {
 			x += -horizSpeed;
 			currentAnimation = PlayerAnimations.RUNNING;
+			currentDirection = Directions.LEFT;
 		} else if (right && !left) {
 			x += horizSpeed;
 			currentAnimation = PlayerAnimations.RUNNING;
+			currentDirection = Directions.RIGHT;
 		}
 		else { 
 			if (jump) {
