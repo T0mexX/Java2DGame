@@ -1,14 +1,11 @@
 package main;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import inputs.*;
-import entities.Player;
+import static main.Game.GAME_HEIGHT;
+import static main.Game.GAME_WIDTH;
 
 public class GamePanel extends JPanel{
 
@@ -43,10 +40,11 @@ public class GamePanel extends JPanel{
 //	}
 	
 	public void setPanelSize() {
-		Dimension size = new Dimension(1200, 800);
+		Dimension size = new Dimension(GAME_WIDTH, GAME_HEIGHT);
 		setMinimumSize(size);
 		setPreferredSize(size);
 		setMaximumSize(size);
+		System.out.println("size: " + GAME_WIDTH + ":" + GAME_HEIGHT);
 	}
 	
 	public void paintComponent(Graphics g) {

@@ -9,7 +9,7 @@ import utils.Constants.Directions;
 public class KeyboardInputs implements KeyListener{
 	
 	private Game game;
-	private boolean up = false, left = false, down = false, right = false; 
+	private boolean up = false, left = false, down = false, right = false, space = false; 
 	private float x = 0, y = 0; 
 	
 	public KeyboardInputs(Game game) {
@@ -51,6 +51,11 @@ public class KeyboardInputs implements KeyListener{
 				right = true;
 			}
 			break;
+		case KeyEvent.VK_SPACE:
+			if (!space) {
+				game.getPlayer().setJump(true);
+				space = true;
+			}
 		}
 	}
 
@@ -74,6 +79,10 @@ public class KeyboardInputs implements KeyListener{
 		case KeyEvent.VK_D:
 			game.getPlayer().setRight(false);
 			right = false;
+			break;
+		case KeyEvent.VK_SPACE:
+			game.getPlayer().setJump(false);
+			space = false;
 			break;
 		}			
 	}
