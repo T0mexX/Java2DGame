@@ -11,13 +11,14 @@ public class Constants {
 	}
 	
 	public static class GameData {
-		
+		public static final float GRAVITY = 0.2f;
 	}
 	
 	public static class PlayerData {
 		
-		public static final int HORIZ_SPEED = 1;
-		public static final int VERT_SPEED = 1;
+		public static final float HORIZ_RUNNING_SPEED = 2.0f;
+		public static final float HORIZ_FLYING_SPEED = 2.0f;
+		public static final float JUMP_VECTOR = -10.0f;
 		
 		public static enum PlayerAnimations {
 			IDLE(0),
@@ -45,13 +46,13 @@ public class Constants {
 			case RUNNING:
 				return 4;
 			case JUMP:
-				return 0;
+				return 4;
 			case CHARGING_JUMP:
 				return 4;
 			case CHARGED_JUMP_HOLD:
 				return 4;
 			case FALLING:
-				return 0;
+				return 2;
 			case GROUND:
 				return 0;
 			case HIT:
@@ -72,13 +73,13 @@ public class Constants {
 			case RUNNING:
 				return 80; //4
 			case JUMP:
-				return 0; //0
+				return 80; //4
 			case CHARGING_JUMP: //4
 				return 40;
 			case CHARGED_JUMP_HOLD: //4
-				return 120;
+				return 120; 
 			case FALLING: 
-				return 0;
+				return 60; //2
 			case GROUND:
 				return 0;
 			case HIT:

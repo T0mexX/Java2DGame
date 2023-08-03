@@ -54,12 +54,14 @@ public class KeyboardInputs implements KeyListener{
 		case KeyEvent.VK_SPACE:
 			if (!space) {
 				game.getPlayer().setJump(true);
+				System.out.println("setJump()");
 				space = true;
 			}
+			break;
 		case KeyEvent.VK_CONTROL:
 			if (!lCtrl) {
 				game.getPlayer().setCrouch(true);
-				System.out.println("crouch TRUE");
+				System.out.println("setCrouch()");
 				lCtrl = true;
 			}
 		}
