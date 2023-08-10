@@ -1,0 +1,144 @@
+package utils;
+
+
+import java.util.Comparator;
+import java.util.Vector;
+import java.util.AbstractMap.SimpleEntry;
+
+import levels.Level;
+import main.Game;
+import structs.CollisionResult;
+import structs.Rect;
+import structs.Vector2D;
+
+public class HelpMethods {
+	
+	public static <T extends Object>void VectorSwap(Vector<T> vector, int index1, int index2) {
+		T tmpT = vector.get(index2);
+		vector.set(index2, vector.get(index1));
+		vector.set(index1, tmpT);
+	}
+
+	public static boolean VectVsRect (Vector2D entityPos, Vector2D xyDelta, Rect targetRect, CollisionResult collisionResult) {
+		Vector2D nearColVectT = Vector2D.div(Vector2D.sub(targetRect.pos, entityPos), xyDelta);
+		Vector2D farColVectT = Vector2D.div(Vector2D.sub(Vector2D.add(targetRect.pos, targetRect.size), entityPos), xyDelta);
+		
+		if (Float.isNaN(nearColVectT.x) || Float.isNaN(nearColVectT.y)) 
+			return false;
+		if (Float.isNaN(farColVectT.x) || Float.isNaN(farColVectT.y))
+			return false;
+		
+		if (nearColVectT.x > farColVectT.x) {
+			float tmp = nearColVectT.x;
+			nearColVectT.x = farColVectT.x;
+			farColVectT.x = tmp;
+		}
+		if (nearColVectT.y > farColVectT.y) {
+			float tmp = nearColVectT.y;
+			nearColVectT.y = farColVectT.y;
+			farColVectT.y = tmp;
+		}
+		
+		if (nearColVectT.x > farColVectT.y || nearColVectT.y > farColVectT.x) return false;
+		
+		float nearColT = Math.max(nearColVectT.x, nearColVectT.y);
+		float farColT = Math.min(farColVectT.x, farColVectT.y);
+		
+		
+		if (nearColT > 1.0f || nearColT < 0.0f) 
+			return false;
+		
+		collisionResult.timeElapsed = nearColT;
+		
+		if (nearColVectT.x > nearColVectT.y) {
+			if (xyDelta.x > 0) collisionResult.setContactNormal(-1, 0);
+			else collisionResult.setContactNormal(1, 0);
+		}
+		else {
+			if (xyDelta.y > 0) collisionResult.setContactNormal(0, -1);
+			else collisionResult.setContactNormal(0,  1);
+		}
+			return true;
+		
+	}
+	
+	
+	
+	public static boolean RectVsRect(Rect entityRect, Vector2D xyDelta, Rect targetRect, CollisionResult collisionResult) {
+//System.out.println("Entity Rect: " + entityRect.pos.x + " " + entityRect.pos.y);
+//System.out.println("xyDelta: " + xyDelta.x + " " + xyDelta.y);
+//System.out.println("targetRect: " + targetRect.pos.x + " " + targetRect.pos.y);
+		//farColT and farColT are percentages on the xyDelta vector
+		Rect expandedTargetRect = new Rect(Vector2D.sub(targetRect.pos, Vector2D.div(entityRect.size, 2)), Vector2D.add(targetRect.size, entityRect.size));
+		
+		if (VectVsRect(Vector2D.add(entityRect.pos, Vector2D.div(entityRect.size, 2)), xyDelta, expandedTargetRect, collisionResult)) {
+			collisionResult.targetRect = targetRect;
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	
+	
+//	public static boolean CanMoveHere(float x, float y, int sizeX, int sizeY, Level level) {
+//		int solidTileMaxIndex = level.getSolidTilesMaxIndex();
+//		int nullTileIndex = level.getNullTileIndex();
+////		System.out.println("CanMoveHere() --> solidTileMaxIndex: " + solidTileMaxIndex + " | nullTileIndex: " + nullTileIndex);
+//		if (!IsSolid(x, y, level.getLevelData(), solidTileMaxIndex, nullTileIndex))
+//			if (!IsSolid(x + sizeX, y, level.getLevelData(), solidTileMaxIndex, nullTileIndex))
+//				if (!IsSolid(x + sizeX, y + sizeY, level.getLevelData(), solidTileMaxIndex, nullTileIndex))
+//					if (!IsSolid(x, y + sizeY, level.getLevelData(), solidTileMaxIndex, nullTileIndex)) {
+////						System.out.println("CanMoveHere() --> return true");
+//						return true;						
+//					}
+////		System.out.println("CanMoveHere() --> return false");
+//		return false;
+//	}
+	
+	public static boolean DoIHaveGround(float currentX, float currentY, int halfSizeX, int halfSizeY, Level level) {
+		int solidTileMaxIndex = level.getSolidTilesMaxIndex();
+		int nullTileIndex = level.getNullTileIndex();
+		if (IsSolid(currentX - halfSizeX, currentY + halfSizeY + 1, level.getLevelData(), solidTileMaxIndex, nullTileIndex) ||
+			IsSolid(currentX + halfSizeX, currentY + halfSizeY + 1, level.getLevelData(), solidTileMaxIndex, nullTileIndex)) 
+			return true;
+		return false;
+	}
+		
+	public static <N extends Number, T> void SortVectorOfPair(Vector<SimpleEntry<N, T>> vector) { //<N extends Number>, Entity>
+//System.out.println("=========\nSortVectorOfPair() ----> before vector.size(): "  + vector.size());
+//for (int i = 0; i < vector.size(); i++) {
+//Vector2D tmpVect = (Vector2D)vector.get(i).getValue();
+//System.out.println("collisionResult: time: " + vector.get(i).getKey() + " normalVect: " + tmpVect.x + " " + tmpVect.y);
+//}
+		vector.sort(new Comparator<SimpleEntry<N, T>>() {
+			@Override
+			public int compare(SimpleEntry<N, T> first, SimpleEntry<N, T> second) {
+				return (((Float)first.getKey()).compareTo((Float)(second.getKey())));
+			}
+		});
+		
+	
+//System.out.println("/////////////");
+//for (int i = 0; i < vector.size(); i++) {
+//Vector2D tmpVect = (Vector2D)vector.get(i).getValue();
+//System.out.println("collisionResult: time: " + vector.get(i).getKey() + " normalVect: " + tmpVect.x + " " + tmpVect.y);
+//		}
+//System.out.println("=========");
+	}
+	
+	private static boolean IsSolid(float x, float y, int[][] lvlData, int solidTilesMaxIndex, int nullTileIndex) {
+		if (x < 0 || x >= Game.GAME_WIDTH || y < 0 || y >= Game.GAME_HEIGHT)
+			return true;
+		
+		float xIndex = x / Game.TILES_SIZE;
+		float yIndex = y / Game.TILES_SIZE;
+		
+		int value = lvlData[(int)yIndex][(int)xIndex];
+//		System.out.println("isSolid() --> xIndex: " + xIndex + " | yIndex: " + yIndex + " | value: " + value);
+		
+		if (value >= solidTilesMaxIndex || value < 0 || value == nullTileIndex) return false;
+//		System.out.println("isSolid() --> return true");
+		return true;
+	}
+}

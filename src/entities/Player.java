@@ -1,13 +1,24 @@
 package entities;
 
-
-
 import utils.Constants.PlayerData;
 import utils.Constants.PlayerData.PlayerAnimations;
 import utils.Constants.GameData;
 import main.Game;
+import structs.CollisionResult;
+import structs.Rect;
+import structs.Vector2D;
 import utils.Constants.Directions;
 import utils.LoadSave;
+import static utils.HelpMethods.DoIHaveGround;
+import static utils.HelpMethods.RectVsRect;
+import static utils.HelpMethods.SortVectorOfPair;
+import static utils.HelpMethods.VectorSwap;
+
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Comparator;
+import java.util.Vector;
+
+import levels.Level;
 
 public class Player extends Entity{
 	
@@ -23,33 +34,40 @@ public class Player extends Entity{
 	private float vectorX = 0.0f, vectorY = 0.0f; 
 	private int crouchTimer = 0, jumpTimer = 0;
 	private PlayerAnimations currentAnimation = PlayerAnimations.IDLE;
+	private Level level;
+	private Vector<Rect> levelHitboxRects = new Vector<Rect>();
+	private CollisionResult collisionResult = new CollisionResult();
 	
 	public Player(float x, float y, int UPS) {
-		super(x, y);
+		super(x, y, imgSizeX, imgSizeY, imgSizeX * PlayerData.HITBOX_X_FRACTION, imgSizeY * PlayerData.HITBOX_Y_FRACTION);
 		horizSpeed = PlayerData.HORIZ_RUNNING_SPEED;
 		horizFlyingSpeed = PlayerData.HORIZ_FLYING_SPEED;
 		this.UPS = UPS;
 		
-		loadAnimations(LoadSave.PLAYER_ATLAS, rows, columns, imgSizeX, imgSizeY);
+		loadAnimations(LoadSave.PLAYER_ATLAS, rows, columns);
 		setAnimation(currentAnimation.value, PlayerData.GetSpriteAmount(currentAnimation), PlayerData.GetAnimDuration(currentAnimation));
-		sizeX = 96;
-		sizeY = 96;
+	}
+	
+	@Override
+	public void update() {
+		updateAnimationTick();
+		updateAnim_Mov(); 
+		updateHitbox();
 	}
 	
 	private void updateAnim_Mov() {
-//		System.out.println("Player.updateAnim_Mov()");
 		PlayerAnimations previousAnimation = currentAnimation; 
 		float xDelta = 0, yDelta = 0;
 		
-		x += vectorX;
-		vectorY += GameData.GRAVITY;
-		y += vectorY;
-		if (y >= 500 - sizeY) {
-			y = 500 - sizeY;
-			vectorY = 0;
-			flying = false;
+		xDelta += vectorX;
+		if (!DoIHaveGround(x, y, (int)halfHitboxSizeX - 1, (int)halfHitboxSizeY, level)) {
+			//-1 to avoid detected ground when adjacent to walls
+			vectorY += GameData.GRAVITY;
+			flying = true;
+			if (vectorY > 0)
+				currentAnimation = PlayerAnimations.FALLING;
 		}
-		
+		yDelta += vectorY;
 		if (flying) {
 			if (currentAnimation == PlayerAnimations.JUMP) {
 				jumpTimer++;
@@ -63,8 +81,8 @@ public class Player extends Entity{
 		if (!flying && crouch) {
 			switch (currentAnimation) {
 			case CHARGING_JUMP:
-				jumpTimer++;
-				if (jumpTimer >= PlayerData.GetAnimDuration(PlayerAnimations.CHARGING_JUMP)) {
+				crouchTimer++;
+				if (crouchTimer >= PlayerData.GetAnimDuration(PlayerAnimations.CHARGING_JUMP)) {
 					currentAnimation = PlayerAnimations.CHARGED_JUMP_HOLD;
 				}
 				break;
@@ -72,16 +90,27 @@ public class Player extends Entity{
 				break;
 			default:
 				currentAnimation = PlayerAnimations.CHARGING_JUMP;
-				jumpTimer = 1;
+				crouchTimer = 1;
 				break;
 			}
 		}
 		
 		if (!flying && jump) {
 			currentAnimation = PlayerAnimations.JUMP;
-			vectorY += PlayerData.JUMP_VECTOR;
+			vectorY = 0;
+			switch (previousAnimation) {
+			case CHARGED_JUMP_HOLD:
+				vectorY += PlayerData.CHARGED_JUMP_VECTOR;
+				break;
+			case CHARGING_JUMP:
+				vectorY += (float)(crouchTimer)/(float)(PlayerData.GetAnimDuration(PlayerAnimations.CHARGING_JUMP)) * (PlayerData.CHARGED_JUMP_VECTOR - PlayerData.JUMP_VECTOR) + PlayerData.JUMP_VECTOR;
+				break;
+			default:
+				vectorY += PlayerData.JUMP_VECTOR;
+				break;
+			}
 			flying = true;
-			jumpTimer++;
+			jumpTimer = 1;
 		}
 				
 		if (left && !right) {
@@ -106,18 +135,74 @@ public class Player extends Entity{
 			currentAnimation = PlayerAnimations.IDLE;
 		}
 		
+		Vector2D xyDelta = new Vector2D(xDelta, yDelta);
+		
+		Vector<SimpleEntry<Float, Rect>> collisionVect = new Vector<SimpleEntry<Float, Rect>>();
+		
+		for (int i = 0; i < levelHitboxRects.size(); i++) {
+			if (RectVsRect(hitboxRect, xyDelta, levelHitboxRects.get(i), collisionResult)) {
+				collisionVect.add(new SimpleEntry<Float, Rect>(collisionResult.timeElapsed, collisionResult.targetRect.copy()));
+			}
+		}
+		SortVectorOfPair(collisionVect);
+		if (collisionVect.size() >= 1) {
+			float tmpFloat = collisionVect.get(0).getKey();
+			for (int i = 1; i < collisionVect.size(); i++) {
+				if (collisionVect.get(i).getKey() == tmpFloat) {
+					if (hitboxRect.pos.x == collisionVect.get(i).getValue().pos.x || hitboxRect.pos.y == collisionVect.get(i).getValue().pos.y) {
+						VectorSwap(collisionVect, i, i - 1);
+					}
+				}
+			}
+		}
+		
+		boolean xDone = false;
+		boolean yDone = false;
+		
+		for (int i = 0; i < collisionVect.size(); i++) {
+			
+			
+			if (!RectVsRect(hitboxRect, xyDelta, collisionVect.get(i).getValue(), collisionResult)) 
+				continue;
+			if (collisionResult.contactNormal.x != 0.0f) {
+				if (xDone)
+					continue;
+				xDone = true;
+			}
+			else {
+				if (yDone)
+					continue;
+				yDone = true;
+			}	
+			
+			if (collisionResult.contactNormal.x == 0.0f) {
+				flying = false;
+				vectorY = 0.0f;
+				currentAnimation = PlayerAnimations.RUNNING;
+			}
+			if (collisionResult.contactNormal.x != 0) {
+				if (currentAnimation == PlayerAnimations.RUNNING) 
+					currentAnimation = PlayerAnimations.IDLE;
+				vectorX = 0.0f;
+			}
+//System.out.println("addedVector: " + Vector2D.mul(Vector2D.mul(collisionResult.contactNormal, xyDelta.absCopy()), 1 - collisionVect.get(i).getKey()).x + " " + Vector2D.mul(Vector2D.mul(collisionResult.contactNormal, xyDelta.absCopy()), 1 - collisionVect.get(i).getKey()).y);
+			xyDelta.add(Vector2D.mul(Vector2D.mul(collisionResult.contactNormal, xyDelta.absCopy()), 1 - collisionVect.get(i).getKey()));
+			if (xDone && yDone)
+				break;
+		}
+		
+		updatePos(xyDelta.x, xyDelta.y);
+		
 		if (currentAnimation != previousAnimation) {
 			setAnimation(currentAnimation.value, PlayerData.GetSpriteAmount(currentAnimation), PlayerData.GetAnimDuration(currentAnimation));
 		}
-		updatePos(xDelta, yDelta);
 	}
 	
-	@Override
-	public void update() {
-//		System.out.println("Player.update()");
-		updateAnimationTick();
-		updateAnim_Mov(); //to implement
-		
+	
+	
+	public void loadLevelData(Level level) {
+		this.level = level;
+		this.levelHitboxRects = level.getLevelHitboxRects();
 	}
 	
 	public void setUp(boolean bool) {
@@ -154,38 +239,4 @@ public class Player extends Entity{
 		down = false;
 		right = false;
 	}
-	
-//	public void setMoving(int key) {
-//		switch (key) {
-//		case KeyEvent.VK_W:
-//			up = true;
-//			break;
-//		case KeyEvent.VK_A:
-//			left = true;
-//			break;
-//		case KeyEvent.VK_S:
-//			down = true;
-//			break;
-//		case KeyEvent.VK_D:
-//			right = true;
-//			break;
-//		}
-//	}
-	
-//	public void clearMoving(int key) {
-//		switch (key) {
-//		case KeyEvent.VK_W:
-//			up = false;
-//			break;
-//		case KeyEvent.VK_A:
-//			left = false;
-//			break;
-//		case KeyEvent.VK_S:
-//			down = false;
-//			break;
-//		case KeyEvent.VK_D:
-//			right = false;
-//			break;
-//		}
-//	}
 }

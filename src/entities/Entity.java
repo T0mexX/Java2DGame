@@ -1,9 +1,13 @@
 package entities;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
+import main.Game;
+import structs.Rect;
 import utils.Constants.Directions;
 import utils.LoadSave;
 
@@ -11,16 +15,30 @@ import utils.LoadSave;
 public abstract class Entity {
 	
 	protected float x, y;
-	protected float defaultSizeX, defaultSizeY; 
+	protected int defaultSizeX, defaultSizeY; 
 	protected float sizeX, sizeY;
+	protected float halfSizeX, halfSizeY;
+	protected float halfHitboxSizeX;
+	protected float halfHitboxSizeY;
 	protected BufferedImage[][] animations;
 	private int animTick, animIndex, frameIndex, animDelta = 20;
 	private int numSpritesPerAnim = 1;
 	protected Directions currentDirection = Directions.RIGHT; //default: right
 	
-	public Entity(float x, float y) {
+	protected Rect hitboxRect;
+	
+	public Entity(float x, float y, int defaultSizeX, int defaultSizeY, float hitboxSizeX, float hitboxSizeY) {
 		this.x = x;
 		this.y = y;
+		this.defaultSizeX = defaultSizeX;
+		this.defaultSizeY = defaultSizeY;
+		this.sizeX = defaultSizeX * Game.SCALE;
+		this.sizeY = defaultSizeY * Game.SCALE;
+		this.halfSizeX = this.sizeX / 2;
+		this.halfSizeY = this.sizeY / 2;
+		this.halfHitboxSizeX = hitboxSizeX * Game.SCALE / 2;
+		this.halfHitboxSizeY = hitboxSizeY * Game.SCALE / 2;
+		hitboxRect = new Rect(x - halfHitboxSizeX, y - halfHitboxSizeY, hitboxSizeX * Game.SCALE, hitboxSizeY * Game.SCALE);
 	}
 	
 	public void update() {
@@ -30,11 +48,29 @@ public abstract class Entity {
 	public void render(Graphics g) {
 		Toolkit.getDefaultToolkit().sync();
 		if (currentDirection == Directions.LEFT) {
-			g.drawImage(animations[animIndex][frameIndex], (int)(x + sizeX), (int)y, (int)-sizeX, (int)sizeY, null);			
+			g.drawImage(animations[animIndex][frameIndex], (int)(x + halfSizeX), (int)(y - halfSizeY), (int)-sizeX, (int)sizeY, null);			
 		} else {
-			g.drawImage(animations[animIndex][frameIndex], (int)x, (int)y, (int)sizeX, (int)sizeY, null);
+			g.drawImage(animations[animIndex][frameIndex], (int)(x - halfSizeX), (int)(y - halfSizeY), (int)sizeX, (int)sizeY, null);
 		}
+//		drawHitbox(g);
 	}
+	
+	protected void drawHitbox(Graphics g) {
+		//for debugging
+		g.setColor(Color.RED);
+		g.drawRect((int)hitboxRect.pos.x, (int)hitboxRect.pos.y, (int)hitboxRect.size.x, (int)hitboxRect.size.y);
+	}
+	
+	protected void updateHitbox() {
+		hitboxRect.pos.x = x - halfHitboxSizeX;
+		hitboxRect.pos.y = y - halfHitboxSizeY;
+	}
+	
+	public Rect getHitbox() {
+		return hitboxRect;
+	}
+	
+	
 	
 	protected void updateAnimationTick() {
 		animTick++;
@@ -63,7 +99,7 @@ public abstract class Entity {
 	protected void setAnimation(int animIndex, int numSpritesPerAnim, int animDuration) {
 		int previousAnimIndex = this.animIndex;
 		animDelta = animDuration / numSpritesPerAnim;
-		System.out.println("animDelta: " + animDelta);
+//		System.out.println("animDelta: " + animDelta);
 //		System.out.println("Entity.setAnimation(): animIndex: " + animIndex + " | numSpritesPerAnim: " + numSpritesPerAnim);
 		this.animIndex = animIndex;
 		this.numSpritesPerAnim = numSpritesPerAnim;
@@ -74,19 +110,15 @@ public abstract class Entity {
 		
 	}
 	
-	protected void loadAnimations(String filePath,int rows, int columns, int sizeX, int sizeY) {
+	protected void loadAnimations(String filePath,int rows, int columns) {
 		BufferedImage img = LoadSave.GetSpriteAtlas(filePath);
 		
 		animations = new BufferedImage[rows][columns];
 		for (int j = 0; j < rows; j++) {
 			for (int i = 0; i < columns; i++) {
-				animations[j][i] = img.getSubimage(i * sizeX, j * sizeY, sizeX, sizeY);
+				animations[j][i] = img.getSubimage(i * defaultSizeX, j * defaultSizeY, defaultSizeX, defaultSizeY);
 			}
 		}
-		this.defaultSizeX = sizeX;
-		this.sizeX = sizeX;
-		this.defaultSizeY = sizeY;
-		this.sizeY = sizeY;
 	}
 	
 	
