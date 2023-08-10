@@ -65,9 +65,6 @@ public class HelpMethods {
 	
 	
 	public static boolean RectVsRect(Rect entityRect, Vector2D xyDelta, Rect targetRect, CollisionResult collisionResult) {
-//System.out.println("Entity Rect: " + entityRect.pos.x + " " + entityRect.pos.y);
-//System.out.println("xyDelta: " + xyDelta.x + " " + xyDelta.y);
-//System.out.println("targetRect: " + targetRect.pos.x + " " + targetRect.pos.y);
 		//farColT and farColT are percentages on the xyDelta vector
 		Rect expandedTargetRect = new Rect(Vector2D.sub(targetRect.pos, Vector2D.div(entityRect.size, 2)), Vector2D.add(targetRect.size, entityRect.size));
 		
@@ -79,23 +76,6 @@ public class HelpMethods {
 			return false;
 	}
 	
-	
-	
-//	public static boolean CanMoveHere(float x, float y, int sizeX, int sizeY, Level level) {
-//		int solidTileMaxIndex = level.getSolidTilesMaxIndex();
-//		int nullTileIndex = level.getNullTileIndex();
-////		System.out.println("CanMoveHere() --> solidTileMaxIndex: " + solidTileMaxIndex + " | nullTileIndex: " + nullTileIndex);
-//		if (!IsSolid(x, y, level.getLevelData(), solidTileMaxIndex, nullTileIndex))
-//			if (!IsSolid(x + sizeX, y, level.getLevelData(), solidTileMaxIndex, nullTileIndex))
-//				if (!IsSolid(x + sizeX, y + sizeY, level.getLevelData(), solidTileMaxIndex, nullTileIndex))
-//					if (!IsSolid(x, y + sizeY, level.getLevelData(), solidTileMaxIndex, nullTileIndex)) {
-////						System.out.println("CanMoveHere() --> return true");
-//						return true;						
-//					}
-////		System.out.println("CanMoveHere() --> return false");
-//		return false;
-//	}
-	
 	public static boolean DoIHaveGround(float currentX, float currentY, int halfSizeX, int halfSizeY, Level level) {
 		int solidTileMaxIndex = level.getSolidTilesMaxIndex();
 		int nullTileIndex = level.getNullTileIndex();
@@ -106,25 +86,12 @@ public class HelpMethods {
 	}
 		
 	public static <N extends Number, T> void SortVectorOfPair(Vector<SimpleEntry<N, T>> vector) { //<N extends Number>, Entity>
-//System.out.println("=========\nSortVectorOfPair() ----> before vector.size(): "  + vector.size());
-//for (int i = 0; i < vector.size(); i++) {
-//Vector2D tmpVect = (Vector2D)vector.get(i).getValue();
-//System.out.println("collisionResult: time: " + vector.get(i).getKey() + " normalVect: " + tmpVect.x + " " + tmpVect.y);
-//}
 		vector.sort(new Comparator<SimpleEntry<N, T>>() {
 			@Override
 			public int compare(SimpleEntry<N, T> first, SimpleEntry<N, T> second) {
 				return (((Float)first.getKey()).compareTo((Float)(second.getKey())));
 			}
 		});
-		
-	
-//System.out.println("/////////////");
-//for (int i = 0; i < vector.size(); i++) {
-//Vector2D tmpVect = (Vector2D)vector.get(i).getValue();
-//System.out.println("collisionResult: time: " + vector.get(i).getKey() + " normalVect: " + tmpVect.x + " " + tmpVect.y);
-//		}
-//System.out.println("=========");
 	}
 	
 	private static boolean IsSolid(float x, float y, int[][] lvlData, int solidTilesMaxIndex, int nullTileIndex) {
@@ -135,10 +102,9 @@ public class HelpMethods {
 		float yIndex = y / Game.TILES_SIZE;
 		
 		int value = lvlData[(int)yIndex][(int)xIndex];
-//		System.out.println("isSolid() --> xIndex: " + xIndex + " | yIndex: " + yIndex + " | value: " + value);
 		
-		if (value >= solidTilesMaxIndex || value < 0 || value == nullTileIndex) return false;
-//		System.out.println("isSolid() --> return true");
+		if (value >= solidTilesMaxIndex || value < 0 || value == nullTileIndex) 
+			return false;
 		return true;
 	}
 }
