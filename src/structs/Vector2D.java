@@ -60,4 +60,21 @@ public class Vector2D {
 		y *= vector2.y;
 		return;
 	}
+	
+	@Override
+	public String toString() {
+		return "(" + x + ", " + y + ")"; 
+	}
+	
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o)
+			return true;
+		if (o == null)
+			return false;
+		if (getClass() != o.getClass())
+			return false;
+		Vector2D vector = (Vector2D)o;
+		return this.x == vector.x && this.y == vector.y;
+	}
 }

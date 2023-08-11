@@ -103,7 +103,7 @@ public class Player extends Entity{
 				vectorY += PlayerData.CHARGED_JUMP_VECTOR;
 				break;
 			case CHARGING_JUMP:
-				vectorY += (float)(crouchTimer)/(float)(PlayerData.GetAnimDuration(PlayerAnimations.CHARGING_JUMP)) * (PlayerData.CHARGED_JUMP_VECTOR - PlayerData.JUMP_VECTOR) + PlayerData.JUMP_VECTOR;
+				vectorY += (float)(crouchTimer - PlayerData.GetAnimDuration(PlayerAnimations.CHARGING_JUMP) / 2)/(float)(PlayerData.GetAnimDuration(PlayerAnimations.CHARGING_JUMP)) * (PlayerData.CHARGED_JUMP_VECTOR - PlayerData.JUMP_VECTOR) + PlayerData.JUMP_VECTOR;
 				break;
 			default:
 				vectorY += PlayerData.JUMP_VECTOR;

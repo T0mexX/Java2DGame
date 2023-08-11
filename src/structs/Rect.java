@@ -23,4 +23,21 @@ public class Rect {
 	public Rect copy() {
 		return new Rect(pos, size);
 	}
+	
+	@Override
+	public String toString() {
+		return "(pos: (" + pos.x + ", " + pos.y + ") | size: (" + size.x + ", " + size.y + "))"; 
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null)
+			return false;
+		if (this.getClass() != o.getClass())
+			return false;
+		Rect rect = (Rect)o;
+		return this.pos.equals(rect.pos) && this.size.equals(rect.size);
+	}
 }
