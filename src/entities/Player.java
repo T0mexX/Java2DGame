@@ -45,7 +45,7 @@ public class Player extends Entity{
 		this.UPS = UPS;
 		
 		loadAnimations(LoadSave.PLAYER_ATLAS, rows, columns);
-		setAnimation(currentAnimation.value, PlayerData.GetSpriteAmount(currentAnimation), PlayerData.GetAnimDuration(currentAnimation));
+		setAnimation(currentAnimation.value, currentAnimation.spritesAmount, currentAnimation.animDuration);
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ public class Player extends Entity{
 		if (flying) {
 			if (currentAnimation == PlayerAnimations.JUMP) {
 				jumpTimer++;
-				if (jumpTimer >= PlayerData.GetAnimDuration(PlayerAnimations.JUMP)) {
+				if (jumpTimer >= PlayerAnimations.JUMP.animDuration) {
 					jumpTimer = 0;
 					currentAnimation = PlayerAnimations.FALLING;
 				}
@@ -82,7 +82,7 @@ public class Player extends Entity{
 			switch (currentAnimation) {
 			case CHARGING_JUMP:
 				crouchTimer++;
-				if (crouchTimer >= PlayerData.GetAnimDuration(PlayerAnimations.CHARGING_JUMP)) {
+				if (crouchTimer >= PlayerAnimations.CHARGING_JUMP.animDuration) {
 					currentAnimation = PlayerAnimations.CHARGED_JUMP_HOLD;
 				}
 				break;
@@ -103,7 +103,7 @@ public class Player extends Entity{
 				vectorY += PlayerData.CHARGED_JUMP_VECTOR;
 				break;
 			case CHARGING_JUMP:
-				vectorY += (float)(crouchTimer - PlayerData.GetAnimDuration(PlayerAnimations.CHARGING_JUMP) / 2)/(float)(PlayerData.GetAnimDuration(PlayerAnimations.CHARGING_JUMP)) * (PlayerData.CHARGED_JUMP_VECTOR - PlayerData.JUMP_VECTOR) + PlayerData.JUMP_VECTOR;
+				vectorY += (float)(crouchTimer - PlayerAnimations.CHARGING_JUMP.animDuration / 2)/(float)PlayerAnimations.CHARGING_JUMP.animDuration * (PlayerData.CHARGED_JUMP_VECTOR - PlayerData.JUMP_VECTOR) + PlayerData.JUMP_VECTOR;
 				break;
 			default:
 				vectorY += PlayerData.JUMP_VECTOR;
@@ -160,8 +160,6 @@ public class Player extends Entity{
 		boolean yDone = false;
 		
 		for (int i = 0; i < collisionVect.size(); i++) {
-			
-			
 			if (!RectVsRect(hitboxRect, xyDelta, collisionVect.get(i).getValue(), collisionResult)) 
 				continue;
 			if (collisionResult.contactNormal.x != 0.0f) {
@@ -185,7 +183,7 @@ public class Player extends Entity{
 					currentAnimation = PlayerAnimations.IDLE;
 				vectorX = 0.0f;
 			}
-//System.out.println("addedVector: " + Vector2D.mul(Vector2D.mul(collisionResult.contactNormal, xyDelta.absCopy()), 1 - collisionVect.get(i).getKey()).x + " " + Vector2D.mul(Vector2D.mul(collisionResult.contactNormal, xyDelta.absCopy()), 1 - collisionVect.get(i).getKey()).y);
+			System.out.println(collisionResult);
 			xyDelta.add(Vector2D.mul(Vector2D.mul(collisionResult.contactNormal, xyDelta.absCopy()), 1 - collisionVect.get(i).getKey()));
 			if (xDone && yDone)
 				break;
@@ -194,7 +192,7 @@ public class Player extends Entity{
 		updatePos(xyDelta.x, xyDelta.y);
 		
 		if (currentAnimation != previousAnimation) {
-			setAnimation(currentAnimation.value, PlayerData.GetSpriteAmount(currentAnimation), PlayerData.GetAnimDuration(currentAnimation));
+			setAnimation(currentAnimation.value, currentAnimation.spritesAmount, currentAnimation.animDuration);
 		}
 	}
 	

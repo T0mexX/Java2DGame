@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.awt.print.Printable;
 
 import main.Game;
 import structs.Rect;
@@ -52,7 +53,7 @@ public abstract class Entity {
 		} else {
 			g.drawImage(animations[animIndex][frameIndex], (int)(x - halfSizeX), (int)(y - halfSizeY), (int)sizeX, (int)sizeY, null);
 		}
-//		drawHitbox(g);
+		drawHitbox(g);
 	}
 	
 	protected void drawHitbox(Graphics g) {
@@ -87,7 +88,6 @@ public abstract class Entity {
 	public void updatePos(float xDelta, float yDelta) {
 		this.x += xDelta;
 		this.y += yDelta;
-//		System.out.println("x: " + x + "(" + xDelta + ") | y: " + y + "(" + yDelta + ")");
 		
 	}
 	
@@ -99,8 +99,6 @@ public abstract class Entity {
 	protected void setAnimation(int animIndex, int numSpritesPerAnim, int animDuration) {
 		int previousAnimIndex = this.animIndex;
 		animDelta = animDuration / numSpritesPerAnim;
-//		System.out.println("animDelta: " + animDelta);
-//		System.out.println("Entity.setAnimation(): animIndex: " + animIndex + " | numSpritesPerAnim: " + numSpritesPerAnim);
 		this.animIndex = animIndex;
 		this.numSpritesPerAnim = numSpritesPerAnim;
 		if (this.animIndex != previousAnimIndex) {
