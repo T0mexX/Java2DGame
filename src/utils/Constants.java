@@ -8,6 +8,19 @@ public class Constants {
 	
 	public static class UI {
 		public static final int SOUND_BUTTON_IMG_SIZE = 42;
+		public static final int URM_BUTTON_IMG_SIZE = 56;
+
+		public static enum UrmButtonEnum {
+			RESUME(0),
+			RETURN(1),
+			HOME(2);
+			
+			public final int buttonIdIndex;
+			
+			private UrmButtonEnum(int index) {
+				buttonIdIndex = index;
+			}
+		}
 		
 		public static class PauseOverlayConst {
 			public static final int BACKGROUND_YPOS = (int)(30 * Game.SCALE);
@@ -19,6 +32,16 @@ public class Constants {
 			public static final int MUSIC_BUTTON_YPOS = (int)(167 * Game.SCALE);
 			public static final int SFX_BUTTON_XPOS = (int)(475 * Game.SCALE);
 			public static final int SFX_BUTTON_YPOS = (int)(213 * Game.SCALE);
+			
+			public static final int URM_BUTTON_SIZE = (int)(56 * Game.SCALE);
+			public static final int RESUME_BUTTON_XPOS = (int)(492 * Game.SCALE);
+			public static final int RESUME_BUTTON_YPOS = (int)(355 * Game.SCALE);
+			public static final int REPLAY_BUTTON_XPOS = (int)(417 * Game.SCALE);
+			public static final int REPLAY_BUTTON_YPOS = (int)(355 * Game.SCALE);
+			public static final int MENU_BUTTON_XPOS = (int)(343 * Game.SCALE);
+			public static final int MENU_BUTTON_YPOS = (int)(355 * Game.SCALE);
+			
+			
 		}
 		
 		public static class MenuConst {

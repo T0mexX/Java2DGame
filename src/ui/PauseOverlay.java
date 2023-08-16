@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 import main.Game;
 import utils.Constants.UI.PauseOverlayConst;
+import utils.Constants.UI.UrmButtonEnum;
 import utils.LoadSave;
 import static utils.HelpMethods.pointVsRect;
 
@@ -14,10 +15,12 @@ public class PauseOverlay {
 	private BufferedImage background;
 	private int xBgPos, yBgPos, xBgSize, yBgSize;
 	private SoundButton musicButton, sfxButton;
+	private UrmButton resumeButton, replayButton, menuButton;
 	
 	public PauseOverlay() {
 		loadBackground();
-		createButtons();
+		createSoundButtons();
+		createUrmButtons();
 	}
 	
 	private void loadBackground() {
@@ -29,20 +32,32 @@ public class PauseOverlay {
 
 	}
 	
-	private void createButtons() {
+	private void createSoundButtons() {
 		musicButton = new SoundButton(PauseOverlayConst.MUSIC_BUTTON_XPOS, PauseOverlayConst.MUSIC_BUTTON_YPOS, PauseOverlayConst.SOUND_BUTTON_SIZE, PauseOverlayConst.SOUND_BUTTON_SIZE);
 		sfxButton = new SoundButton(PauseOverlayConst.SFX_BUTTON_XPOS, PauseOverlayConst.SFX_BUTTON_YPOS, PauseOverlayConst.SOUND_BUTTON_SIZE, PauseOverlayConst.SOUND_BUTTON_SIZE);
+	}
+	
+	private void createUrmButtons() {
+		resumeButton = new UrmButton(PauseOverlayConst.RESUME_BUTTON_XPOS, PauseOverlayConst.RESUME_BUTTON_YPOS, PauseOverlayConst.URM_BUTTON_SIZE, PauseOverlayConst.URM_BUTTON_SIZE, UrmButtonEnum.RESUME);
+		replayButton = new UrmButton(PauseOverlayConst.REPLAY_BUTTON_XPOS, PauseOverlayConst.REPLAY_BUTTON_YPOS, PauseOverlayConst.URM_BUTTON_SIZE, PauseOverlayConst.URM_BUTTON_SIZE, UrmButtonEnum.RETURN);
+		menuButton = new UrmButton(PauseOverlayConst.MENU_BUTTON_XPOS, PauseOverlayConst.MENU_BUTTON_YPOS, PauseOverlayConst.URM_BUTTON_SIZE, PauseOverlayConst.URM_BUTTON_SIZE, UrmButtonEnum.HOME);
 	}
 	
 	public void update() {
 		musicButton.update();
 		sfxButton.update();
+		resumeButton.update();
+		replayButton.update();
+		menuButton.update();
 	}
 	
 	public void draw(Graphics g) {
 		g.drawImage(background, xBgPos, yBgPos, xBgSize, yBgSize, null);
 		musicButton.draw(g);
 		sfxButton.draw(g);
+		resumeButton.draw(g);
+		replayButton.draw(g);
+		menuButton.draw(g);
 	}
 	
 	public void mousePressed(MouseEvent e) {
@@ -52,6 +67,18 @@ public class PauseOverlay {
 		}
 		if (pointVsRect(e.getX(), e.getY(), sfxButton.getHitbox())) {
 			sfxButton.setMousePressed(true);
+			return;
+		}
+		if (pointVsRect(e.getX(), e.getY(), resumeButton.getHitbox())) {
+			resumeButton.setMousePressed(true);
+			return;
+		}
+		if (pointVsRect(e.getX(), e.getY(), replayButton.getHitbox())) {
+			replayButton.setMousePressed(true);
+			return;
+		}
+		if (pointVsRect(e.getX(), e.getY(), menuButton.getHitbox())) {
+			menuButton.setMousePressed(true);
 			return;
 		}
 	}
@@ -67,6 +94,18 @@ public class PauseOverlay {
 			sfxButton.resetBools();
 			return;
 		}
+		if (pointVsRect(e.getX(), e.getY(), resumeButton.getHitbox()) && sfxButton.getMousePressed()) {
+			resumeButton.resetBools();
+			return;
+		}
+		if (pointVsRect(e.getX(), e.getY(), replayButton.getHitbox()) && sfxButton.getMousePressed()) {
+			replayButton.resetBools();
+			return;
+		}
+		if (pointVsRect(e.getX(), e.getY(), menuButton.getHitbox()) && sfxButton.getMousePressed()) {
+			menuButton.resetBools();
+			return;
+		}
 		resetButtonsBools();
 	}
 	
@@ -80,6 +119,18 @@ public class PauseOverlay {
 			sfxButton.setMouseOver(true);
 		else 
 			sfxButton.setMouseOver(false);
+		if (pointVsRect(e.getX(), e.getY(), resumeButton.getHitbox()))
+			resumeButton.setMouseOver(true);
+		else 
+			resumeButton.setMouseOver(false);
+		if (pointVsRect(e.getX(), e.getY(), replayButton.getHitbox()))
+			replayButton.setMouseOver(true);
+		else 
+			replayButton.setMouseOver(false);
+		if (pointVsRect(e.getX(), e.getY(), menuButton.getHitbox()))
+			menuButton.setMouseOver(true);
+		else 
+			menuButton.setMouseOver(false);
 	}
 	
 	public void mouseDragged(MouseEvent e) {
@@ -89,5 +140,8 @@ public class PauseOverlay {
 	public void resetButtonsBools() {
 		musicButton.resetBools();
 		sfxButton.resetBools();
+		resumeButton.resetBools();
+		replayButton.resetBools();
+		menuButton.resetBools();
 	}
 }
