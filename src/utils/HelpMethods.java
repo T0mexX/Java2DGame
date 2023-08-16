@@ -18,6 +18,23 @@ public class HelpMethods {
 		vector.set(index2, vector.get(index1));
 		vector.set(index1, tmpT);
 	}
+	
+	public static boolean pointVsRect(Vector2D point, Rect targetRect) {
+		if (point.x <= targetRect.pos.x + targetRect.size.x
+			&& point.x >= targetRect.pos.x
+			&& point.y <= targetRect.pos.y + targetRect.size.y
+			&& point.y >= targetRect.pos.y)
+			return true;
+		return false;
+	}
+	public static boolean pointVsRect(float xPos, float yPos, Rect targetRect) {
+		if (xPos <= targetRect.pos.x + targetRect.size.x
+				&& xPos >= targetRect.pos.x
+				&& yPos <= targetRect.pos.y + targetRect.size.y
+				&& yPos >= targetRect.pos.y)
+			return true;
+		return false;
+	}
 
 	public static boolean VectVsRect (Vector2D entityPos, Vector2D xyDelta, Rect targetRect, CollisionResult collisionResult) {
 		Vector2D nearColVectT = Vector2D.div(Vector2D.sub(targetRect.pos, entityPos), xyDelta);

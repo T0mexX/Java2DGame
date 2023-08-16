@@ -3,6 +3,7 @@ package inputs;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import gameStates.GameState;
 import main.Game;
 import utils.Constants.Directions;
 
@@ -24,77 +25,27 @@ public class KeyboardInputs implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-//		System.out.println("keyPressed()");
-//		game.getPlayer().setMoving(e.getKeyCode());
-		switch (e.getKeyCode()) {
-		case KeyEvent.VK_W:
-			if (!up) {
-				game.getPlayer().setUp(true);
-				up = true;
-			}
+		switch (GameState.currentState) {
+		case MENU:
+			game.getMenu().keyPressed(e);
 			break;
-		case KeyEvent.VK_A:
-			if (!left) {
-				game.getPlayer().setLeft(true);
-				left = true;
-			}
+		case GAME_ACTIVE:
+			game.getGameActive().keyPressed(e);
 			break;
-		case KeyEvent.VK_S:
-			if (!down) {
-				game.getPlayer().setDown(true);
-				down = true;
-			}
-			break;
-		case KeyEvent.VK_D:
-			if (!right) {
-				game.getPlayer().setRight(true);
-				right = true;
-			}
-			break;
-		case KeyEvent.VK_SPACE:
-			if (!space) {
-				game.getPlayer().setJump(true);
-				space = true;
-			}
-			break;
-		case KeyEvent.VK_CONTROL:
-			if (!lCtrl) {
-				game.getPlayer().setCrouch(true);
-				lCtrl = true;
-			}
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-//		System.out.println("keyReleased()");
-//		game.getPlayer().clearMoving(e.getKeyCode());
-		switch (e.getKeyCode()) {
-		case KeyEvent.VK_W:
-			game.getPlayer().setUp(false);
-			up = false;
+		switch (GameState.currentState) {
+		case MENU:
+			game.getMenu().keyReleased(e);
 			break;
-		case KeyEvent.VK_A:
-			game.getPlayer().setLeft(false);
-			left = false;
+		case GAME_ACTIVE:
+			game.getGameActive().keyReleased(e);
 			break;
-		case KeyEvent.VK_S:
-			game.getPlayer().setDown(false);
-			down = false;
-			break;
-		case KeyEvent.VK_D:
-			game.getPlayer().setRight(false);
-			right = false;
-			break;
-		case KeyEvent.VK_SPACE:
-			game.getPlayer().setJump(false);
-			space = false;
-			break;
-		case KeyEvent.VK_CONTROL:
-			game.getPlayer().setCrouch(false);
-			lCtrl = false;
-			break;
-		}			
+		}
 	}
+	
 
 }

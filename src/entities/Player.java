@@ -15,14 +15,13 @@ import static utils.HelpMethods.SortVectorOfPair;
 import static utils.HelpMethods.VectorSwap;
 
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Comparator;
 import java.util.Vector;
+import static java.lang.System.nanoTime;
 
 import levels.Level;
 
 public class Player extends Entity{
 	
-	private final int UPS;
 	private static int rows = 6;
 	private static int columns = 4;
 	private static int imgSizeX = 32;
@@ -37,12 +36,12 @@ public class Player extends Entity{
 	private Level level;
 	private Vector<Rect> levelHitboxRects = new Vector<Rect>();
 	private CollisionResult collisionResult = new CollisionResult();
+private Vector<Long> deltaTimes = new Vector<>();
 	
-	public Player(float x, float y, int UPS) {
+	public Player(float x, float y) {
 		super(x, y, imgSizeX, imgSizeY, imgSizeX * PlayerData.HITBOX_X_FRACTION, imgSizeY * PlayerData.HITBOX_Y_FRACTION);
 		horizSpeed = PlayerData.HORIZ_RUNNING_SPEED;
 		horizFlyingSpeed = PlayerData.HORIZ_FLYING_SPEED;
-		this.UPS = UPS;
 		
 		loadAnimations(LoadSave.PLAYER_ATLAS, rows, columns);
 		setAnimation(currentAnimation.value, currentAnimation.spritesAmount, currentAnimation.animDuration);
@@ -139,11 +138,14 @@ public class Player extends Entity{
 		
 		Vector<SimpleEntry<Float, Rect>> collisionVect = new Vector<SimpleEntry<Float, Rect>>();
 		
+		
+		
 		for (int i = 0; i < levelHitboxRects.size(); i++) {
 			if (RectVsRect(hitboxRect, xyDelta, levelHitboxRects.get(i), collisionResult)) {
 				collisionVect.add(new SimpleEntry<Float, Rect>(collisionResult.timeElapsed, collisionResult.targetRect.copy()));
 			}
 		}
+		
 		SortVectorOfPair(collisionVect);
 		if (collisionVect.size() >= 1) {
 			float tmpFloat = collisionVect.get(0).getKey();
@@ -183,7 +185,6 @@ public class Player extends Entity{
 					currentAnimation = PlayerAnimations.IDLE;
 				vectorX = 0.0f;
 			}
-			System.out.println(collisionResult);
 			xyDelta.add(Vector2D.mul(Vector2D.mul(collisionResult.contactNormal, xyDelta.absCopy()), 1 - collisionVect.get(i).getKey()));
 			if (xDone && yDone)
 				break;

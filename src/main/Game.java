@@ -1,10 +1,10 @@
 package main;
 
 import java.awt.Graphics;
-import java.awt.Toolkit;
 
-import entities.Player;
-import levels.LevelManager;
+import gameStates.GameActive;
+import gameStates.GameState;
+import gameStates.Menu;
 
 public class Game implements Runnable{
 	
@@ -13,8 +13,9 @@ public class Game implements Runnable{
 	private final int FPS = 120; 
 	private final int UPS = 200;
 	private Thread gameThread;
-	private Player player;
-	private LevelManager levelManager;
+	
+	private Menu menu;
+	private GameActive gameActive;
 	
 	public final static int TILES_DEFAULT_SIZE = 32;
 	public final static float SCALE = 2.0f;
@@ -24,16 +25,18 @@ public class Game implements Runnable{
 	public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
 	public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
 	
-	public Game() {
-		levelManager = new LevelManager(this);
-		player = new Player(0, 0, UPS);
-		player.loadLevelData(levelManager.getCurrentLevel());
-		
+	public Game() {		
+		initClasses();
 		gamePanel = new GamePanel(this);
 		gameWindow = new GameWindow(this, gamePanel);
-		
 		gamePanel.requestFocus();
 		startGameLoop();
+	}
+	
+	private void initClasses() {
+		menu = new Menu(this);
+		System.out.println("menu exists: " + menu != null);
+		gameActive = new GameActive(this);
 	}
 	
 	private void startGameLoop() {
@@ -42,17 +45,30 @@ public class Game implements Runnable{
 	}
 	
 	public void update() {
-		levelManager.update();
-		player.update();
+		
+		switch(GameState.currentState) {
+		case MENU:
+			menu.update();
+			break;
+		case GAME_ACTIVE:
+			gameActive.update();
+			break;
+		case OPTIONS:
+		case QUIT:
+			System.exit(0);
+			break; 
+		}
 	}
 	
 	public void render(Graphics g) {
-		levelManager.draw(g);
-		player.render(g);
-	}
-	
-	public Player getPlayer() {
-		return player;
+		switch(GameState.currentState) {
+		case MENU:
+			menu.draw(g);
+			break;
+		case GAME_ACTIVE:
+			gameActive.draw(g);
+			break;
+		}
 	}
 	
 	public int getFPS() {
@@ -63,9 +79,23 @@ public class Game implements Runnable{
 		return UPS;
 	}
 	
-	public void windowFocusLost() {
-		player.clearAllInputs();
+	public Menu getMenu() {
+		return menu;
 	}
+	
+	public GameActive getGameActive() {
+		return gameActive;
+	}
+	
+	public void windowFocusLost() {
+		switch (GameState.currentState) {
+		case GAME_ACTIVE:
+			gameActive.windowFocusLost();
+		default:
+			break; 
+		}
+	}
+
 	
 	@Override
 	public void run() {
@@ -113,8 +143,4 @@ public class Game implements Runnable{
 
 		}
 	}
-	
-	
-	
-	
 }

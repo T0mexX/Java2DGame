@@ -2,8 +2,36 @@ package utils;
 
 import java.awt.Dimension;
 
+import main.Game;
+
 public class Constants {
 	
+	public static class UI {
+		public static final int SOUND_BUTTON_IMG_SIZE = 42;
+		
+		public static class PauseOverlayConst {
+			public static final int BACKGROUND_YPOS = (int)(30 * Game.SCALE);
+			public static final int BACKGROUND_XSIZE = (int)(258 * Game.SCALE);
+			public static final int BACKGROUND_YSIZE = (int)(389 * Game.SCALE);
+			
+			public static final int SOUND_BUTTON_SIZE = (int)(42 * Game.SCALE);
+			public static final int MUSIC_BUTTON_XPOS = (int)(475 * Game.SCALE); 
+			public static final int MUSIC_BUTTON_YPOS = (int)(167 * Game.SCALE);
+			public static final int SFX_BUTTON_XPOS = (int)(475 * Game.SCALE);
+			public static final int SFX_BUTTON_YPOS = (int)(213 * Game.SCALE);
+		}
+		
+		public static class MenuConst {
+			public static final int BACKGROUND_YPOS = (int)(45 * Game.SCALE);
+			public static final int BACKGROUND_XSIZE = (int)(282 * Game.SCALE);
+			public static final int BACKGROUND_YSIZE = (int)(336 * Game.SCALE);
+			
+			public static final int BTN_IMG_XSIZE = 140;
+			public static final int BTN_IMG_YSIZE = 56;
+			public static final int BTN_XSIZE = (int)(140 * Game.SCALE); 
+			public static final int BTN_YSIZE = (int)(56 * Game.SCALE); 
+		}
+	}
 	
 	public static enum Directions {
 		UP,
@@ -42,16 +70,16 @@ public class Constants {
 	}
 	
 	public static class GameData {
-		public static final float GRAVITY = 0.1f;
+		public static final float GRAVITY = 0.05f * Game.SCALE;
 	}
 	
 	public static class PlayerData {
 		
 		public static final float HITBOX_X_FRACTION = 0.4f;
 		public static final float HITBOX_Y_FRACTION = 1f;
-		public static final float HORIZ_RUNNING_SPEED = 2.0f;
-		public static final float HORIZ_FLYING_SPEED = 2.0f;
-		public static final float JUMP_VECTOR = -4.5f, CHARGED_JUMP_VECTOR = -7.0f;
+		public static final float HORIZ_RUNNING_SPEED = 1.0f * Game.SCALE;
+		public static final float HORIZ_FLYING_SPEED = 1.0f * Game.SCALE;
+		public static final float JUMP_VECTOR = -2.7f * Game.SCALE, CHARGED_JUMP_VECTOR = -3.7f * Game.SCALE;
 		
 		public static enum PlayerEffects {
 			JUMP_ENERGY(0);
