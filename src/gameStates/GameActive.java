@@ -5,6 +5,9 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import background.Background;
+import background.BgConstants.BgBgEnum;
+import background.BgConstants.BgBuilderFunctionEnum;
 import entities.Player;
 import levels.LevelManager;
 import main.Game;
@@ -15,6 +18,7 @@ public class GameActive extends State implements StateMethods {
 	private Player player;
 	private LevelManager levelManager;
 	private PauseOverlay pauseOverlay;
+	private Background background;
 	private boolean paused = false;
 	private int xLvlOffset = 0;
 	private int leftCameraBorder = (int)(0.4f * Game.GAME_WIDTH);
@@ -34,6 +38,7 @@ public class GameActive extends State implements StateMethods {
 		player = new Player(500, 400);
 		player.loadLevelData(levelManager.getCurrentLevel());
 		pauseOverlay = new PauseOverlay(this);
+		background = new Background(BgBuilderFunctionEnum.N1, levelManager.getCurrentLevel().getLevelData()[0].length * Game.TILES_SIZE);
 	}
 	
 	@Override
@@ -58,6 +63,7 @@ public class GameActive extends State implements StateMethods {
 
 	@Override
 	public void draw(Graphics g) {
+		background.draw(g, xLvlOffset);
 		levelManager.draw(g, xLvlOffset);
 		player.render(g, xLvlOffset);
 		if (paused) {
