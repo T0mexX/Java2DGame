@@ -36,7 +36,6 @@ public class Player extends Entity{
 	private Level level;
 	private Vector<Rect> levelHitboxRects = new Vector<Rect>();
 	private CollisionResult collisionResult = new CollisionResult();
-private Vector<Long> deltaTimes = new Vector<>();
 	
 	public Player(float x, float y) {
 		super(x, y, imgSizeX, imgSizeY, imgSizeX * PlayerData.HITBOX_X_FRACTION, imgSizeY * PlayerData.HITBOX_Y_FRACTION);
@@ -60,12 +59,14 @@ private Vector<Long> deltaTimes = new Vector<>();
 		
 		xDelta += vectorX;
 		if (!DoIHaveGround(x, y, (int)halfHitboxSizeX - 1, (int)halfHitboxSizeY, level)) {
+			System.out.println("not ground");
 			//-1 to avoid detected ground when adjacent to walls
 			vectorY += GameData.GRAVITY;
 			flying = true;
 			if (vectorY > 0)
 				currentAnimation = PlayerAnimations.FALLING;
 		}
+		System.out.println("flying: " + flying + " | crouch: " + crouch);
 		yDelta += vectorY;
 		if (flying) {
 			if (currentAnimation == PlayerAnimations.JUMP) {
@@ -140,8 +141,8 @@ private Vector<Long> deltaTimes = new Vector<>();
 		
 		
 		
-		for (int i = 0; i < levelHitboxRects.size(); i++) {
-			if (RectVsRect(hitboxRect, xyDelta, levelHitboxRects.get(i), collisionResult)) {
+		for (Rect rect : levelHitboxRects) {
+			if (RectVsRect(hitboxRect, xyDelta, rect, collisionResult)) {
 				collisionVect.add(new SimpleEntry<Float, Rect>(collisionResult.timeElapsed, collisionResult.targetRect.copy()));
 			}
 		}

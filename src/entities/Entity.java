@@ -46,20 +46,20 @@ public abstract class Entity {
 		updateAnimationTick();
 	}
 	
-	public void render(Graphics g) {
+	public void render(Graphics g, int xLvlOffset) {
 		Toolkit.getDefaultToolkit().sync();
 		if (currentDirection == Directions.LEFT) {
-			g.drawImage(animations[animIndex][frameIndex], (int)(x + halfSizeX), (int)(y - halfSizeY), (int)-sizeX, (int)sizeY, null);			
+			g.drawImage(animations[animIndex][frameIndex], (int)(x + halfSizeX - xLvlOffset), (int)(y - halfSizeY), (int)-sizeX, (int)sizeY, null);			
 		} else {
-			g.drawImage(animations[animIndex][frameIndex], (int)(x - halfSizeX), (int)(y - halfSizeY), (int)sizeX, (int)sizeY, null);
+			g.drawImage(animations[animIndex][frameIndex], (int)(x - halfSizeX - xLvlOffset), (int)(y - halfSizeY), (int)sizeX, (int)sizeY, null);
 		}
-		drawHitbox(g);
+		drawHitbox(g, xLvlOffset);
 	}
 	
-	protected void drawHitbox(Graphics g) {
+	protected void drawHitbox(Graphics g, int xLvlOffset) {
 		//for debugging
 		g.setColor(Color.RED);
-		g.drawRect((int)hitboxRect.pos.x, (int)hitboxRect.pos.y, (int)hitboxRect.size.x, (int)hitboxRect.size.y);
+		g.drawRect((int)hitboxRect.pos.x - xLvlOffset, (int)hitboxRect.pos.y, (int)hitboxRect.size.x, (int)hitboxRect.size.y);
 	}
 	
 	protected void updateHitbox() {
@@ -119,5 +119,10 @@ public abstract class Entity {
 		}
 	}
 	
-	
+	public float getXPos() {
+		return x;
+	}
+	public float getYPos() {
+		return y;
+	}
 }

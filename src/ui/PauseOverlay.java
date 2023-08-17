@@ -106,34 +106,35 @@ public class PauseOverlay {
 	public void mouseReleased(MouseEvent e) {
 		if (pointVsRect(e.getX(), e.getY(), musicButton.getHitbox()) && musicButton.getMousePressed()) {
 			musicButton.toggleMuted();
-			musicButton.resetBools();
+			musicButton.setMousePressed(false);
 			return;
 		}
 		if (pointVsRect(e.getX(), e.getY(), sfxButton.getHitbox()) && sfxButton.getMousePressed()) {
 			sfxButton.toggleMuted();
-			sfxButton.resetBools();
+			sfxButton.setMousePressed(false);
 			return;
 		}
 		if (pointVsRect(e.getX(), e.getY(), resumeButton.getHitbox()) && resumeButton.getMousePressed()) {
 			gameActive.setPaused(false);;
-			resumeButton.resetBools();
+			resumeButton.setMousePressed(false);
 			return;
 		}
 		if (pointVsRect(e.getX(), e.getY(), replayButton.getHitbox()) && replayButton.getMousePressed()) {
 			System.out.println("REPLAY");
-			replayButton.resetBools();
+			replayButton.setMousePressed(false);
 			return;
 		}
 		if (pointVsRect(e.getX(), e.getY(), menuButton.getHitbox()) && menuButton.getMousePressed()) {
 			GameState.currentState = GameState.MENU;
-			menuButton.resetBools();
+			menuButton.setMousePressed(false);
 			return;
 		}
 		if (pointVsRect(e.getX(), e.getY(), volumeBar.getHitbox()) && volumeBar.getMousePressed()) {
-			volumeBar.resetBools();
+			volumeBar.setMousePressed(false);
 			return;
 		}
-		resetButtonsBools();
+		resetButtonsMousePressed();
+		volumeBar.updateHitboxXPos();
 	}
 	
 	public void mouseMoved(MouseEvent e) {
@@ -179,5 +180,15 @@ public class PauseOverlay {
 		replayButton.resetBools();
 		menuButton.resetBools();
 		volumeBar.resetBools();
+	}
+	
+	public void resetButtonsMousePressed() {
+		musicButton.setMousePressed(false);
+		sfxButton.setMousePressed(false);
+		resumeButton.setMousePressed(false);
+		replayButton.setMousePressed(false);
+		menuButton.setMousePressed(false);
+		volumeBar.setMousePressed(false);
+		
 	}
 }

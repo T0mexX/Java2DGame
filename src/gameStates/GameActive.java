@@ -1,5 +1,6 @@
 package gameStates;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -15,15 +16,22 @@ public class GameActive extends State implements StateMethods {
 	private LevelManager levelManager;
 	private PauseOverlay pauseOverlay;
 	private boolean paused = false;
+	private int xLvlOffset = 0;
+	private int leftCameraBorder = (int)(0.4f * Game.GAME_WIDTH);
+	private int rightCameraBorder = (int)(0.6f * Game.GAME_WIDTH);
+	private int xLvlOffsetMax;
 
 	public GameActive(Game game) {
 		super(game);
 		initClasses();
+		
+		int lvlWidthInTiles = levelManager.getCurrentLevel().getLevelData()[0].length;
+		xLvlOffsetMax = lvlWidthInTiles * Game.TILES_SIZE - Game.GAME_WIDTH - 1;
 	}
 	
 	private void initClasses() {
 		levelManager = new LevelManager(game);
-		player = new Player(0, 0);
+		player = new Player(500, 400);
 		player.loadLevelData(levelManager.getCurrentLevel());
 		pauseOverlay = new PauseOverlay(this);
 	}
@@ -35,15 +43,28 @@ public class GameActive extends State implements StateMethods {
 		else {
 			levelManager.update();
 			player.update();
+			moveCamera();
 		}
+	}
+	
+	private void moveCamera() {
+		System.out.println("leftcambord: " + leftCameraBorder + " | rightcambord: " + rightCameraBorder + " | xlvloffsetmax: " + xLvlOffsetMax);
+		int xPlayerPos = (int)player.getXPos();
+		if (xPlayerPos < leftCameraBorder + xLvlOffset) 
+			xLvlOffset = Math.max(xPlayerPos - leftCameraBorder, 0);
+		else  if (xPlayerPos > rightCameraBorder + xLvlOffset)
+			xLvlOffset = Math.min(xPlayerPos - rightCameraBorder, xLvlOffsetMax);
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		levelManager.draw(g);
-		player.render(g);
-		if (paused)
+		levelManager.draw(g, xLvlOffset);
+		player.render(g, xLvlOffset);
+		if (paused) {
+			g.setColor(new Color(0, 0, 0, 150));
+			g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 			pauseOverlay.draw(g);
+		}
 	}
 
 	@Override
@@ -77,7 +98,6 @@ public class GameActive extends State implements StateMethods {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println("keypressedgameasctive");
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_W:
 			player.setUp(true);

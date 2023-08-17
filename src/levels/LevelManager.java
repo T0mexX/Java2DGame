@@ -37,11 +37,12 @@ public class LevelManager {
 		}
 	}
 	
-	public void draw(Graphics g) {
-		
+	public void draw(Graphics g, int xLvlOffset) {
+		System.out.println("LevelManager.draw(): xLvlOffset: " + xLvlOffset);
+		int xTilesOffset = xLvlOffset / Game.TILES_SIZE;
 		for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) {
-			for (int i = 0; i < Game.TILES_IN_WIDTH; i++) {
-				g.drawImage(levelSprites[level.getSpriteIndex(i, j)], i * Game.TILES_SIZE, j * Game.TILES_SIZE, Game.TILES_SIZE, Game.TILES_SIZE,  null);				
+			for (int i = 0 + xTilesOffset; i < Game.TILES_IN_WIDTH + xTilesOffset + 1; i++) {
+				g.drawImage(levelSprites[level.getSpriteIndex(i, j)], i * Game.TILES_SIZE - xLvlOffset, j * Game.TILES_SIZE, Game.TILES_SIZE, Game.TILES_SIZE,  null);				
 			}
 		}
 		

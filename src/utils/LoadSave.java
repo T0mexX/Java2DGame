@@ -13,7 +13,7 @@ public class LoadSave {
 	
 	public static final String PLAYER_ATLAS = "/playerAnimations1_1x1_32x32.png";
 	public static final String LEVEL_ATLAS = "/outside_sprites.png";
-	public static final String LEVEL_1_DATA = "/level_1_data.png";
+	public static final String LEVEL_1_DATA = "/lvl1Data.png";
 	public static final String MENU_BUTTONS_ATLAS = "/menuButtonsAtlas.png";
 	public static final String MENU_BACKGROUND_IMG = "/menuBackgroundImg.png";
 	public static final String PAUSE_BACKGROUND_IMG = "/pauseBackgroundImg.png";
@@ -41,8 +41,8 @@ public class LoadSave {
 	}
 	
 	public static int[][] GetLevelData(String filePath, int spriteArraySize, int nullTileIndex) {
-		int[][] lvlData = new int[Game.TILES_IN_HEIGHT][Game.TILES_IN_WIDTH];
 		BufferedImage img = GetSpriteAtlas(filePath);
+		int[][] lvlData = new int[img.getHeight()][img.getWidth()];
 		for (int j = 0; j < img.getHeight(); j++) {
 			for (int i = 0; i < img.getWidth(); i++) {
 				Color color = new Color(img.getRGB(i, j));

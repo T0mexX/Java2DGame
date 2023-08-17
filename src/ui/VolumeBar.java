@@ -24,8 +24,8 @@ public class VolumeBar extends Button{
 		xBgPosForDraw = xPos - xBgSize / 2;
 		yBgPosForDraw = yPos - yBgSize / 2;
 		this.percentage = percentage;
-		xButtonPosMax = xBgPosForDraw;
-		xButtonPosMin = xBgPosForDraw + xBgSize;
+		xButtonPosMin = xBgPosForDraw;
+		xButtonPosMax = xBgPosForDraw + xBgSize;
 		loadImgs();
 	}
 	
@@ -45,21 +45,35 @@ public class VolumeBar extends Button{
 	}
 	
 	public void setVolumePercentage(int xPos) {
+		System.out.println("mouse xPos:" + xPos);
 		if (xPos <= xButtonPosMin) {
+			System.out.println("<min");
 			super.xPos = xButtonPosMin;
-			super.xPosForDraw = xPos - xSize/2;
+			super.xPosForDraw = super.xPos - xSize/2;
 			percentage = 0.0f;
 		}
 		else if (xPos >= xButtonPosMax) {
+			System.out.println(">max");
 			super.xPos = xButtonPosMax;
-			super.xPosForDraw = xPos - xSize/2;
+			super.xPosForDraw = super.xPos - xSize/2;
 			percentage = 1.0f;
 		}
 		else {
-			percentage = xPos - xButtonPosMin / xSize;
+			System.out.println("else");
+			System.out.println("xButtonPosMin:" + xButtonPosMin);
+			percentage = (float)(xPos - xButtonPosMin) / (float)xBgSize;
+			System.out.println("percentage: " + percentage);
 			super.xPos = (int)(xButtonPosMin + xBgSize * percentage);
-			super.xPosForDraw = xPos - xSize/2;
+			updateXPosForDraw();
 		}
+	}
+	
+	private void updateXPosForDraw() {
+		xPosForDraw = xPos - xSize / 2;
+	}
+	
+	public void updateHitboxXPos() {
+		hitbox.pos.x = xPosForDraw;
 	}
 	
 	public float getVolumePercentage() {
