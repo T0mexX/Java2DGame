@@ -25,7 +25,7 @@ public class GameActive extends State implements StateMethods {
 		levelManager = new LevelManager(game);
 		player = new Player(0, 0);
 		player.loadLevelData(levelManager.getCurrentLevel());
-		pauseOverlay = new PauseOverlay();
+		pauseOverlay = new PauseOverlay(this);
 	}
 	
 	@Override
@@ -48,8 +48,6 @@ public class GameActive extends State implements StateMethods {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (!paused)
-			player.setPos(e.getX(),e.getY());
 	}
 
 	@Override
@@ -62,6 +60,8 @@ public class GameActive extends State implements StateMethods {
 	public void mouseReleased(MouseEvent e) {
 		if (paused)
 			pauseOverlay.mouseReleased(e);
+		else 
+			player.setPos(e.getX(),e.getY());
 	}
 
 	@Override
@@ -133,5 +133,9 @@ public class GameActive extends State implements StateMethods {
 
 	public void windowFocusLost() {
 		player.clearAllInputs();
+	}
+	
+	public void setPaused(boolean value) {
+		paused = value;
 	}
 }

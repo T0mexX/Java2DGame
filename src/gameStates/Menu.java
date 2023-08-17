@@ -70,8 +70,8 @@ public class Menu extends State implements StateMethods {
 				btn.applyGameState();
 				break;
 			}
-			btn.resetBools();
 		}
+		resetButtonsBools();
 	}
 
 	@Override
@@ -97,5 +97,11 @@ public class Menu extends State implements StateMethods {
 	@Override
 	public void windowFocusLost() {
 		
+	}
+	
+	private void resetButtonsBools() {
+		for (MenuButton btn : buttons) {
+			btn.resetBools();
+		}
 	}
 }

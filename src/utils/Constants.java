@@ -9,6 +9,11 @@ public class Constants {
 	public static class UI {
 		public static final int SOUND_BUTTON_IMG_SIZE = 42;
 		public static final int URM_BUTTON_IMG_SIZE = 56;
+		public static final int VOLUME_BUTTON_IMG_XSIZE = 28;
+		public static final float VOLUME_BUTTON_XSIZE_ON_BARXSIZE = 28f/215f; 
+		public static final float VOLUME_BUTTON_YSIZE_ON_BARYSIZE = 0.8f; 
+		
+		
 
 		public static enum UrmButtonEnum {
 			RESUME(0),
@@ -40,6 +45,11 @@ public class Constants {
 			public static final int REPLAY_BUTTON_YPOS = (int)(355 * Game.SCALE);
 			public static final int MENU_BUTTON_XPOS = (int)(343 * Game.SCALE);
 			public static final int MENU_BUTTON_YPOS = (int)(355 * Game.SCALE);
+			
+			public static final int VOLUME_BAR_XSIZE = (int)(215 * Game.SCALE);
+			public static final int VOLUME_BAR_YSIZE = (int)(44 * Game.SCALE);
+			public static final int VOLUME_BAR_XPOS = (int)(Game.GAME_WIDTH / 2);
+			public static final int VOLUME_BAR_YPOS = (int)(300 * Game.SCALE);
 			
 			
 		}

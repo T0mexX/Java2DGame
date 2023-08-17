@@ -54,4 +54,9 @@ public class Button {
 		mouseOver = false;
 		mousePressed = false;
 	}
+	
+	@Override
+	public String toString() {
+		return "(Pos: (" + xPos + ", " + yPos + ") | Size: (" + xSize + ", " + ySize + ")"; 
+	}
 }

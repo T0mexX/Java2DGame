@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
+import gameStates.GameActive;
+import gameStates.GameState;
 import main.Game;
 import utils.Constants.UI.PauseOverlayConst;
 import utils.Constants.UI.UrmButtonEnum;
@@ -16,11 +18,15 @@ public class PauseOverlay {
 	private int xBgPos, yBgPos, xBgSize, yBgSize;
 	private SoundButton musicButton, sfxButton;
 	private UrmButton resumeButton, replayButton, menuButton;
+	private VolumeBar volumeBar;
+	private GameActive gameActive;
 	
-	public PauseOverlay() {
+	public PauseOverlay(GameActive gameActive) {
+		this.gameActive = gameActive;
 		loadBackground();
 		createSoundButtons();
 		createUrmButtons();
+		createVolumeBar();
 	}
 	
 	private void loadBackground() {
@@ -43,21 +49,31 @@ public class PauseOverlay {
 		menuButton = new UrmButton(PauseOverlayConst.MENU_BUTTON_XPOS, PauseOverlayConst.MENU_BUTTON_YPOS, PauseOverlayConst.URM_BUTTON_SIZE, PauseOverlayConst.URM_BUTTON_SIZE, UrmButtonEnum.HOME);
 	}
 	
+	private void createVolumeBar() {
+		volumeBar = new VolumeBar(PauseOverlayConst.VOLUME_BAR_XPOS, PauseOverlayConst.VOLUME_BAR_YPOS, PauseOverlayConst.VOLUME_BAR_XSIZE, PauseOverlayConst.VOLUME_BAR_YSIZE, 0.5f);
+	}
+	
 	public void update() {
 		musicButton.update();
 		sfxButton.update();
+		
 		resumeButton.update();
 		replayButton.update();
 		menuButton.update();
+		
+		volumeBar.update();
 	}
 	
 	public void draw(Graphics g) {
 		g.drawImage(background, xBgPos, yBgPos, xBgSize, yBgSize, null);
 		musicButton.draw(g);
 		sfxButton.draw(g);
+		
 		resumeButton.draw(g);
 		replayButton.draw(g);
 		menuButton.draw(g);
+		
+		volumeBar.draw(g);
 	}
 	
 	public void mousePressed(MouseEvent e) {
@@ -81,6 +97,10 @@ public class PauseOverlay {
 			menuButton.setMousePressed(true);
 			return;
 		}
+		if (pointVsRect(e.getX(), e.getY(), volumeBar.getHitbox())) {
+			volumeBar.setMousePressed(true);
+			return;
+		}
 	}
 	
 	public void mouseReleased(MouseEvent e) {
@@ -94,16 +114,23 @@ public class PauseOverlay {
 			sfxButton.resetBools();
 			return;
 		}
-		if (pointVsRect(e.getX(), e.getY(), resumeButton.getHitbox()) && sfxButton.getMousePressed()) {
+		if (pointVsRect(e.getX(), e.getY(), resumeButton.getHitbox()) && resumeButton.getMousePressed()) {
+			gameActive.setPaused(false);;
 			resumeButton.resetBools();
 			return;
 		}
-		if (pointVsRect(e.getX(), e.getY(), replayButton.getHitbox()) && sfxButton.getMousePressed()) {
+		if (pointVsRect(e.getX(), e.getY(), replayButton.getHitbox()) && replayButton.getMousePressed()) {
+			System.out.println("REPLAY");
 			replayButton.resetBools();
 			return;
 		}
-		if (pointVsRect(e.getX(), e.getY(), menuButton.getHitbox()) && sfxButton.getMousePressed()) {
+		if (pointVsRect(e.getX(), e.getY(), menuButton.getHitbox()) && menuButton.getMousePressed()) {
+			GameState.currentState = GameState.MENU;
 			menuButton.resetBools();
+			return;
+		}
+		if (pointVsRect(e.getX(), e.getY(), volumeBar.getHitbox()) && volumeBar.getMousePressed()) {
+			volumeBar.resetBools();
 			return;
 		}
 		resetButtonsBools();
@@ -119,22 +146,30 @@ public class PauseOverlay {
 			sfxButton.setMouseOver(true);
 		else 
 			sfxButton.setMouseOver(false);
+		
 		if (pointVsRect(e.getX(), e.getY(), resumeButton.getHitbox()))
 			resumeButton.setMouseOver(true);
 		else 
 			resumeButton.setMouseOver(false);
+		
 		if (pointVsRect(e.getX(), e.getY(), replayButton.getHitbox()))
 			replayButton.setMouseOver(true);
 		else 
 			replayButton.setMouseOver(false);
+		
 		if (pointVsRect(e.getX(), e.getY(), menuButton.getHitbox()))
 			menuButton.setMouseOver(true);
 		else 
 			menuButton.setMouseOver(false);
+		if (pointVsRect(e.getX(), e.getY(), volumeBar.getHitbox()))
+			volumeBar.setMouseOver(true);
+		else 
+			volumeBar.setMouseOver(false);
 	}
 	
 	public void mouseDragged(MouseEvent e) {
-		
+		if (volumeBar.getMousePressed())
+			volumeBar.setVolumePercentage(e.getX());
 	}
 	
 	public void resetButtonsBools() {
@@ -143,5 +178,6 @@ public class PauseOverlay {
 		resumeButton.resetBools();
 		replayButton.resetBools();
 		menuButton.resetBools();
+		volumeBar.resetBools();
 	}
 }
