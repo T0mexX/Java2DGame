@@ -17,7 +17,6 @@ import utils.Constants.LvlDataId;
 
 
 public class GameActive extends State implements StateMethods {
-	private LvlDataId lvlDataId;
 	private Player player;
 	private LevelManager levelManager;
 	private PauseOverlay pauseOverlay;
@@ -31,21 +30,24 @@ public class GameActive extends State implements StateMethods {
 
 	public GameActive(Game game) {
 		super(game);
-		lvlDataId = lvlDataId.LVL3;
 		initClasses();
-		
-		int lvlWidthInTiles = levelManager.getCurrentLevel().getLevelData()[0].length;
-		xLvlOffsetMax = lvlWidthInTiles * Game.TILES_SIZE - Game.GAME_WIDTH - 1;
+		loadMaxLvlOffset();
 	}
 	
 	private void initClasses() {
 		levelManager = new LevelManager(game);
-		levelManager.setLvl(lvlDataId);
-		player = new Player(lvlDataId.spawnPoint.x, lvlDataId.spawnPoint.y);
+		levelManager.setLvl(1);
+		player = new Player(levelManager.getCurrentLevel().getSpawnPoint());
 		player.loadLevelData(levelManager.getCurrentLevel());
 		pauseOverlay = new PauseOverlay(this);
-		lvlCompletedOverlay = new LvlCompletedOverlay();
+		lvlCompletedOverlay = new LvlCompletedOverlay(this);
 		background = new Background(BgBuilderFunctionEnum.N1, levelManager.getCurrentLevel().getLevelData()[0].length * Game.TILES_SIZE);
+	}
+	
+	private void loadMaxLvlOffset() {
+		int lvlWidthInTiles = levelManager.getCurrentLevel().getLevelData()[0].length;
+		xLvlOffsetMax = lvlWidthInTiles * Game.TILES_SIZE - Game.GAME_WIDTH - 1;
+
 	}
 	
 	@Override
@@ -62,7 +64,6 @@ public class GameActive extends State implements StateMethods {
 	}
 	
 	private void moveCamera() {
-		System.out.println("leftcambord: " + leftCameraBorder + " | rightcambord: " + rightCameraBorder + " | xlvloffsetmax: " + xLvlOffsetMax);
 		int xPlayerPos = (int)player.getXPos();
 		if (xPlayerPos < leftCameraBorder + xLvlOffset) 
 			xLvlOffset = Math.max(xPlayerPos - leftCameraBorder, 0);
@@ -186,5 +187,16 @@ public class GameActive extends State implements StateMethods {
 	
 	public void setPaused(boolean value) {
 		paused = value;
+	}
+	
+	public void setLvlCompleted(boolean value) {
+		lvlCompleted = value;
+	}
+	
+	public void nextLvl() {
+		levelManager.nextLvl();
+		loadMaxLvlOffset();
+		player = new Player(levelManager.getCurrentLevel().getSpawnPoint());
+		player.loadLevelData(levelManager.getCurrentLevel());
 	}
 }

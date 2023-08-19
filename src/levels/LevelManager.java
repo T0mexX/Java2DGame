@@ -4,27 +4,33 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import main.Game;
+import structs.Vector2D;
 import utils.LoadSave;
 import utils.Constants.LvlDataId;
 
 public class LevelManager {
 
 	private Game game;
-	
 	private BufferedImage[] levelSprites;
-	
-	private int currentLevelNum = 1;
-	private Level level;
+	private Level[] levels;
+	private Level currentLevel;
 	
 	public LevelManager(Game game) {
 		this.game = game;
-//		System.out.println("Default tile index: " + LevelData.GetLevelNullTileIndex(currentLevelNum));
+		levels = new Level[LvlDataId.values().length + 1];
+		
+		for (LvlDataId lvlDataId : LvlDataId.values()) {
+			levels[lvlDataId.lvlNum] = new Level(lvlDataId);
+		}
 	}
 	
-	public void setLvl(LvlDataId lvlDataId) {
-		level = new Level(lvlDataId);		
-		loadLevelSprites(lvlDataId);
-
+	public void setLvl(int lvlNum) {
+		currentLevel = levels[lvlNum];		
+		loadLevelSprites(currentLevel.getLvlDataId());
+	}
+	
+	public void nextLvl() {
+		setLvl(currentLevel.getLvlDataId().lvlNum + 1);
 	}
 	
 	private void loadLevelSprites(LvlDataId lvlDataId) {
@@ -43,7 +49,7 @@ public class LevelManager {
 		int xTilesOffset = xLvlOffset / Game.TILES_SIZE;
 		for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) {
 			for (int i = 0 + xTilesOffset; i < Game.TILES_IN_WIDTH + xTilesOffset + 1; i++) {
-				g.drawImage(levelSprites[level.getSpriteIndex(i, j)], i * Game.TILES_SIZE - xLvlOffset, j * Game.TILES_SIZE, Game.TILES_SIZE, Game.TILES_SIZE,  null);				
+				g.drawImage(levelSprites[currentLevel.getSpriteIndex(i, j)], i * Game.TILES_SIZE - xLvlOffset, j * Game.TILES_SIZE, Game.TILES_SIZE, Game.TILES_SIZE,  null);				
 			}
 		}
 		
@@ -55,6 +61,6 @@ public class LevelManager {
 	}
 	
 	public Level getCurrentLevel() {
-		return level;
+		return currentLevel;
 	}
 }

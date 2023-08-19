@@ -26,13 +26,6 @@ public class LoadSave {
 	public static BufferedImage GetSpriteAtlas(String filePath) {
 		BufferedImage img = null; 
 		
-		File file = new File(".");
-		for(String fileNames : file.list()) System.out.println(fileNames);
-		System.out.println(filePath);
-//		if (filePath.equals(MENU_BUTTONS_ATLAS))
-//			return null;
-		
-		
 		InputStream is = LoadSave.class.getResourceAsStream(filePath);
 		try {
 			img = ImageIO.read(is);			

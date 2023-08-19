@@ -16,7 +16,6 @@ public class VolumeBar extends Button{
 	
 	public VolumeBar(int xPos, int yPos, int xSize, int ySize, float percentage) {
 		super((xPos - xSize / 2) + (int)(xSize * percentage), yPos, (int)(xSize * Constants.UI.VOLUME_BUTTON_XSIZE_ON_BARXSIZE), (int)(ySize * Constants.UI.VOLUME_BUTTON_YSIZE_ON_BARYSIZE));
-		System.out.println("VolumeButton: " + super.toString());
 		xBgSize = xSize;
 		yBgSize = ySize;
 		xBgPos = xPos;
@@ -45,24 +44,18 @@ public class VolumeBar extends Button{
 	}
 	
 	public void setVolumePercentage(int xPos) {
-		System.out.println("mouse xPos:" + xPos);
 		if (xPos <= xButtonPosMin) {
-			System.out.println("<min");
 			super.xPos = xButtonPosMin;
 			super.xPosForDraw = super.xPos - xSize/2;
 			percentage = 0.0f;
 		}
 		else if (xPos >= xButtonPosMax) {
-			System.out.println(">max");
 			super.xPos = xButtonPosMax;
 			super.xPosForDraw = super.xPos - xSize/2;
 			percentage = 1.0f;
 		}
 		else {
-			System.out.println("else");
-			System.out.println("xButtonPosMin:" + xButtonPosMin);
 			percentage = (float)(xPos - xButtonPosMin) / (float)xBgSize;
-			System.out.println("percentage: " + percentage);
 			super.xPos = (int)(xButtonPosMin + xBgSize * percentage);
 			updateXPosForDraw();
 		}

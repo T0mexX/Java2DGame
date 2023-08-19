@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
+import gameStates.GameActive;
 import gameStates.GameState;
 import utils.LoadSave;
 import utils.Constants.UI.LvlCompletedOverlayConst;
@@ -16,9 +17,10 @@ public class LvlCompletedOverlay implements Overlay{
 	private BufferedImage background;
 	private UrmButton menuButton, nextButton;
 	private int xBgPos, yBgPos, xBgPosForDraw, yBgPosForDraw, xBgSize, yBgSize;
+	private GameActive gameActive;
 	
-	
-	public LvlCompletedOverlay() {
+	public LvlCompletedOverlay(GameActive gameActive) {
+		this.gameActive = gameActive;
 		loadBackground();
 		createUrmButtons();
 	}
@@ -39,7 +41,6 @@ public class LvlCompletedOverlay implements Overlay{
 	}
 	
 	public void update() {
-		System.out.println("LvlCompletedOverlay.update()");
 		menuButton.update();
 		nextButton.update();
 	}
@@ -68,7 +69,8 @@ public class LvlCompletedOverlay implements Overlay{
 			return;
 		}
 		if (pointVsRect(e.getX(), e.getY(), nextButton.getHitbox()) && nextButton.getMousePressed()) {
-//			nextButton.();
+			gameActive.setLvlCompleted(false);
+			gameActive.nextLvl();
 			nextButton.setMousePressed(false);
 			return;
 		}

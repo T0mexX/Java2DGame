@@ -75,4 +75,7 @@ public class Level {
 	public Vector2D getSpawnPoint() {
 		return spawnPoint;
 	}
+	public LvlDataId getLvlDataId() {
+		return lvlDataId;
+	}
 }

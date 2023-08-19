@@ -37,8 +37,8 @@ public class Player extends Entity{
 	private Vector<Rect> levelHitboxRects = new Vector<Rect>();
 	private CollisionResult collisionResult = new CollisionResult();
 	
-	public Player(float x, float y) {
-		super(x, y, imgSizeX, imgSizeY, imgSizeX * PlayerData.HITBOX_X_FRACTION, imgSizeY * PlayerData.HITBOX_Y_FRACTION);
+	public Player(Vector2D spawnPoint) {
+		super(spawnPoint.x, spawnPoint.y, imgSizeX, imgSizeY, imgSizeX * PlayerData.HITBOX_X_FRACTION, imgSizeY * PlayerData.HITBOX_Y_FRACTION);
 		horizSpeed = PlayerData.HORIZ_RUNNING_SPEED;
 		horizFlyingSpeed = PlayerData.HORIZ_FLYING_SPEED;
 		
@@ -59,14 +59,12 @@ public class Player extends Entity{
 		
 		xDelta += vectorX;
 		if (!DoIHaveGround(x, y, (int)halfHitboxSizeX - 1, (int)halfHitboxSizeY, level)) {
-			System.out.println("not ground");
 			//-1 to avoid detected ground when adjacent to walls
 			vectorY += GameData.GRAVITY;
 			flying = true;
 			if (vectorY > 0)
 				currentAnimation = PlayerAnimations.FALLING;
 		}
-		System.out.println("flying: " + flying + " | crouch: " + crouch);
 		yDelta += vectorY;
 		if (flying) {
 			if (currentAnimation == PlayerAnimations.JUMP) {

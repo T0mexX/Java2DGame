@@ -95,11 +95,13 @@ public class Constants {
 		public final String filePath;
 		public final TileAtlasId tileAtlasId;
 		public final Vector2D spawnPoint;
+		public final int lvlNum;
 		
 		LvlDataId(String filePath, TileAtlasId tileAtlasId, Vector2D spawnPoint) {
 			this.filePath = filePath;
 			this.tileAtlasId = tileAtlasId;
 			this.spawnPoint = spawnPoint;
+			lvlNum = Character.getNumericValue(this.name().charAt(3));
 		}
 		
 		public static enum TileAtlasId {
