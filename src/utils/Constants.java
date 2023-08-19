@@ -3,6 +3,7 @@ package utils;
 import java.awt.Dimension;
 
 import main.Game;
+import structs.Vector2D;
 
 public class Constants {
 	
@@ -87,14 +88,18 @@ public class Constants {
 	}
 	
 	public static enum LvlDataId {
-		LVL1("/res/lvl1Data.png", TileAtlasId.DEFAULT);
+		LVL1("/res/lvls/1.png", TileAtlasId.DEFAULT, new Vector2D(100 * Game.SCALE, 300 * Game.SCALE)),
+		LVL2("/res/lvls/2.png", TileAtlasId.DEFAULT, new Vector2D(100 * Game.SCALE, 300 * Game.SCALE)),
+		LVL3("/res/lvls/3.png", TileAtlasId.DEFAULT, new Vector2D(100 * Game.SCALE, 300 * Game.SCALE));
 		
 		public final String filePath;
 		public final TileAtlasId tileAtlasId;
+		public final Vector2D spawnPoint;
 		
-		LvlDataId(String filePath, TileAtlasId tileAtlasId) {
+		LvlDataId(String filePath, TileAtlasId tileAtlasId, Vector2D spawnPoint) {
 			this.filePath = filePath;
 			this.tileAtlasId = tileAtlasId;
+			this.spawnPoint = spawnPoint;
 		}
 		
 		public static enum TileAtlasId {

@@ -19,8 +19,12 @@ public class LevelManager {
 	public LevelManager(Game game) {
 		this.game = game;
 //		System.out.println("Default tile index: " + LevelData.GetLevelNullTileIndex(currentLevelNum));
-		level = new Level(LvlDataId.LVL1);		
-		loadLevelSprites(LvlDataId.LVL1);
+	}
+	
+	public void setLvl(LvlDataId lvlDataId) {
+		level = new Level(lvlDataId);		
+		loadLevelSprites(lvlDataId);
+
 	}
 	
 	private void loadLevelSprites(LvlDataId lvlDataId) {

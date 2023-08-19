@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import main.Game;
 import structs.Rect;
+import structs.Vector2D;
 import utils.Constants.LvlDataId;
 import utils.LoadSave;
 
@@ -16,6 +17,7 @@ public class Level {
 	private int nullTileIndex;
 	private int tilesSpritesArraySize;
 	private int solidTilesMaxIndex;
+	private Vector2D spawnPoint;
 	private Vector<Rect> levelHitboxRects;
 	
 	
@@ -24,6 +26,7 @@ public class Level {
 		this.nullTileIndex = lvlDataId.tileAtlasId.nullTileIndex;
 		this.tilesSpritesArraySize = lvlDataId.tileAtlasId.xSize * lvlDataId.tileAtlasId.ySize;
 		this.solidTilesMaxIndex = lvlDataId.tileAtlasId.maxSolidTileIndex;
+		this.spawnPoint = lvlDataId.spawnPoint;
 		this.levelHitboxRects = new Vector<Rect>();
 		loadLevelData();
 		loadTilesHitboxes();
@@ -68,5 +71,8 @@ public class Level {
 	}
 	public Vector<Rect> getLevelHitboxRects() {
 		return levelHitboxRects;
+	}
+	public Vector2D getSpawnPoint() {
+		return spawnPoint;
 	}
 }

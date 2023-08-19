@@ -13,9 +13,11 @@ import levels.LevelManager;
 import main.Game;
 import ui.LvlCompletedOverlay;
 import ui.PauseOverlay;
+import utils.Constants.LvlDataId;
 
 
 public class GameActive extends State implements StateMethods {
+	private LvlDataId lvlDataId;
 	private Player player;
 	private LevelManager levelManager;
 	private PauseOverlay pauseOverlay;
@@ -29,6 +31,7 @@ public class GameActive extends State implements StateMethods {
 
 	public GameActive(Game game) {
 		super(game);
+		lvlDataId = lvlDataId.LVL3;
 		initClasses();
 		
 		int lvlWidthInTiles = levelManager.getCurrentLevel().getLevelData()[0].length;
@@ -37,7 +40,8 @@ public class GameActive extends State implements StateMethods {
 	
 	private void initClasses() {
 		levelManager = new LevelManager(game);
-		player = new Player(500, 400);
+		levelManager.setLvl(lvlDataId);
+		player = new Player(lvlDataId.spawnPoint.x, lvlDataId.spawnPoint.y);
 		player.loadLevelData(levelManager.getCurrentLevel());
 		pauseOverlay = new PauseOverlay(this);
 		lvlCompletedOverlay = new LvlCompletedOverlay();
