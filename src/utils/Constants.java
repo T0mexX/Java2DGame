@@ -83,7 +83,7 @@ public class Constants {
 		UP,
 		LEFT,
 		DOWN,
-		RIGHT
+		RIGHT 
 	}
 	
 	public static enum LvlDataId {
