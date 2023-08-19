@@ -78,4 +78,7 @@ public class Level {
 	public LvlDataId getLvlDataId() {
 		return lvlDataId;
 	}
+	public int getMaxLvlOffset() {
+		return lvlData[0].length * Game.TILES_SIZE - Game.GAME_WIDTH - 1;
+	}
 }

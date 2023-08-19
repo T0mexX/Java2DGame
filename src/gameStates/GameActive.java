@@ -31,7 +31,7 @@ public class GameActive extends State implements StateMethods {
 	public GameActive(Game game) {
 		super(game);
 		initClasses();
-		loadMaxLvlOffset();
+		xLvlOffsetMax = levelManager.getCurrentLevel().getMaxLvlOffset();
 	}
 	
 	private void initClasses() {
@@ -42,12 +42,6 @@ public class GameActive extends State implements StateMethods {
 		pauseOverlay = new PauseOverlay(this);
 		lvlCompletedOverlay = new LvlCompletedOverlay(this);
 		background = new Background(BgBuilderFunctionEnum.N1, levelManager.getCurrentLevel().getLevelData()[0].length * Game.TILES_SIZE);
-	}
-	
-	private void loadMaxLvlOffset() {
-		int lvlWidthInTiles = levelManager.getCurrentLevel().getLevelData()[0].length;
-		xLvlOffsetMax = lvlWidthInTiles * Game.TILES_SIZE - Game.GAME_WIDTH - 1;
-
 	}
 	
 	@Override
@@ -195,7 +189,7 @@ public class GameActive extends State implements StateMethods {
 	
 	public void nextLvl() {
 		levelManager.nextLvl();
-		loadMaxLvlOffset();
+		xLvlOffsetMax = levelManager.getCurrentLevel().getMaxLvlOffset();
 		player = new Player(levelManager.getCurrentLevel().getSpawnPoint());
 		player.loadLevelData(levelManager.getCurrentLevel());
 	}
