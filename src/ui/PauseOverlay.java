@@ -13,9 +13,9 @@ import utils.LoadSave;
 import static utils.HelpMethods.pointVsRect;
 
 
-public class PauseOverlay {
+public class PauseOverlay implements Overlay{
 	private BufferedImage background;
-	private int xBgPos, yBgPos, xBgSize, yBgSize;
+	private int xBgPos, yBgPos, xBgPosForDraw, yBgPosForDraw, xBgSize, yBgSize;
 	private SoundButton musicButton, sfxButton;
 	private UrmButton resumeButton, replayButton, menuButton;
 	private VolumeBar volumeBar;
@@ -33,9 +33,10 @@ public class PauseOverlay {
 		background = LoadSave.GetSpriteAtlas(LoadSave.PAUSE_BACKGROUND_IMG);
 		xBgSize = PauseOverlayConst.BACKGROUND_XSIZE;
 		yBgSize = PauseOverlayConst.BACKGROUND_YSIZE;
-		xBgPos = Game.GAME_WIDTH / 2 - xBgSize / 2;
+		xBgPos = Game.GAME_WIDTH / 2;
+		xBgPosForDraw = xBgPos - xBgSize / 2;
 		yBgPos = PauseOverlayConst.BACKGROUND_YPOS;
-
+		yBgPosForDraw = yBgPos - yBgSize / 2;
 	}
 	
 	private void createSoundButtons() {
@@ -65,7 +66,7 @@ public class PauseOverlay {
 	}
 	
 	public void draw(Graphics g) {
-		g.drawImage(background, xBgPos, yBgPos, xBgSize, yBgSize, null);
+		g.drawImage(background, xBgPosForDraw, yBgPosForDraw, xBgSize, yBgSize, null);
 		musicButton.draw(g);
 		sfxButton.draw(g);
 		
@@ -171,15 +172,6 @@ public class PauseOverlay {
 	public void mouseDragged(MouseEvent e) {
 		if (volumeBar.getMousePressed())
 			volumeBar.setVolumePercentage(e.getX());
-	}
-	
-	public void resetButtonsBools() {
-		musicButton.resetBools();
-		sfxButton.resetBools();
-		resumeButton.resetBools();
-		replayButton.resetBools();
-		menuButton.resetBools();
-		volumeBar.resetBools();
 	}
 	
 	public void resetButtonsMousePressed() {

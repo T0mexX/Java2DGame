@@ -11,6 +11,7 @@ import background.BgConstants.BgBuilderFunctionEnum;
 import entities.Player;
 import levels.LevelManager;
 import main.Game;
+import ui.LvlCompletedOverlay;
 import ui.PauseOverlay;
 
 
@@ -18,8 +19,9 @@ public class GameActive extends State implements StateMethods {
 	private Player player;
 	private LevelManager levelManager;
 	private PauseOverlay pauseOverlay;
+	private LvlCompletedOverlay lvlCompletedOverlay;
 	private Background background;
-	private boolean paused = false;
+	private boolean paused = false, lvlCompleted = false;
 	private int xLvlOffset = 0;
 	private int leftCameraBorder = (int)(0.4f * Game.GAME_WIDTH);
 	private int rightCameraBorder = (int)(0.6f * Game.GAME_WIDTH);
@@ -38,6 +40,7 @@ public class GameActive extends State implements StateMethods {
 		player = new Player(500, 400);
 		player.loadLevelData(levelManager.getCurrentLevel());
 		pauseOverlay = new PauseOverlay(this);
+		lvlCompletedOverlay = new LvlCompletedOverlay();
 		background = new Background(BgBuilderFunctionEnum.N1, levelManager.getCurrentLevel().getLevelData()[0].length * Game.TILES_SIZE);
 	}
 	
@@ -45,6 +48,8 @@ public class GameActive extends State implements StateMethods {
 	public void update() {
 		if (paused)
 			pauseOverlay.update();
+		else if (lvlCompleted)
+			lvlCompletedOverlay.update();
 		else {
 			levelManager.update();
 			player.update();
@@ -71,6 +76,11 @@ public class GameActive extends State implements StateMethods {
 			g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
 			pauseOverlay.draw(g);
 		}
+		else if (lvlCompleted) {
+			g.setColor(new Color(0, 0, 0, 150));
+			g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+			lvlCompletedOverlay.draw(g);
+		}
 	}
 
 	@Override
@@ -81,20 +91,25 @@ public class GameActive extends State implements StateMethods {
 	public void mousePressed(MouseEvent e) {
 		if (paused)
 			pauseOverlay.mousePressed(e);
+		if (lvlCompleted)
+			lvlCompletedOverlay.mousePressed(e);
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (paused)
 			pauseOverlay.mouseReleased(e);
-		else 
-			player.setPos(e.getX(),e.getY());
+		if (lvlCompleted)
+			lvlCompletedOverlay.mouseReleased(e);
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		if (paused)
 			pauseOverlay.mouseMoved(e);
+		if (lvlCompleted)
+			lvlCompletedOverlay.mouseMoved(e);
+
 	}
 	
 	public void mouseDragged(MouseEvent e) {
@@ -125,6 +140,10 @@ public class GameActive extends State implements StateMethods {
 			break;
 		case KeyEvent.VK_ESCAPE:
 			paused = !paused;
+			break;
+		case KeyEvent.VK_T: //testing
+			lvlCompleted = true;
+			break;
 		}
 	}
 

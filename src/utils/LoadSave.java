@@ -21,6 +21,7 @@ public class LoadSave {
 	public static final String VOLUME_BUTTONS_ATLAS = "/res/volumeButtonsAtlas.png";
 	public static final String SOUND_BUTTON_ATLAS = "/res/soundButtonAtlas.png";
 	public static final String URM_BUTTONS_ATLAS = "/res/urmButtonsAtlas.png";
+	public static final String LVL_COMPLETED_BACKGROUND_IMG = "/res/lvlCompletedBgImg.png";
 	
 	public static BufferedImage GetSpriteAtlas(String filePath) {
 		BufferedImage img = null; 
@@ -46,20 +47,5 @@ public class LoadSave {
 			}
 		}
 		return img;
-	}
-	
-	public static int[][] GetLevelData(String filePath, int spriteArraySize, int nullTileIndex) {
-		BufferedImage img = GetSpriteAtlas(filePath);
-		int[][] lvlData = new int[img.getHeight()][img.getWidth()];
-		for (int j = 0; j < img.getHeight(); j++) {
-			for (int i = 0; i < img.getWidth(); i++) {
-				Color color = new Color(img.getRGB(i, j));
-				int value = color.getRed();
-				if (value >= spriteArraySize) 
-					value = nullTileIndex;
-				lvlData[j][i] = value;
-			}
-		}
-		return lvlData;
 	}
 }

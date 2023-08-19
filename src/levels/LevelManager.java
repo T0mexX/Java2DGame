@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 
 import main.Game;
 import utils.LoadSave;
-import utils.Constants.LevelData;
+import utils.Constants.LvlDataId;
 
 public class LevelManager {
 
@@ -17,19 +17,17 @@ public class LevelManager {
 	private Level level;
 	
 	public LevelManager(Game game) {
-		
 		this.game = game;
-		loadLevelSprites();
 //		System.out.println("Default tile index: " + LevelData.GetLevelNullTileIndex(currentLevelNum));
-		level = new Level(LoadSave.GetLevelData(LoadSave.LEVEL_1_DATA, LevelData.GetLevelTilesArraySize(currentLevelNum), LevelData.GetLevelNullTileIndex(currentLevelNum)), LevelData.GetLevelNullTileIndex(currentLevelNum), LevelData.GetLevelTilesArraySize(currentLevelNum), LevelData.GetLevelMaxSolidTilesIndex(currentLevelNum));		
+		level = new Level(LvlDataId.LVL1);		
+		loadLevelSprites(LvlDataId.LVL1);
 	}
 	
-	private void loadLevelSprites() {
-		int rows = LevelData.GetLevelTilesImageRows(currentLevelNum);
-		int columns = LevelData.GetLevelTilesImageColumns(currentLevelNum);
-//		System.out.println("LvlTilesImg: rows: " + rows + " | columns: " + columns + " | arraySize: " + LevelData.GetLevelTilesArraySize(currentLevelNum));
-		BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.LEVEL_ATLAS);
-		levelSprites = new BufferedImage[LevelData.GetLevelTilesArraySize(currentLevelNum)];
+	private void loadLevelSprites(LvlDataId lvlDataId) {
+		int rows = lvlDataId.tileAtlasId.ySize;
+		int columns = lvlDataId.tileAtlasId.xSize;
+		BufferedImage img = LoadSave.GetSpriteAtlas(lvlDataId.tileAtlasId.filePath);
+		levelSprites = new BufferedImage[rows * columns];
 		for (int j = 0; j < rows; j++) {
 			for (int i = 0; i < columns; i++) {
 				levelSprites[j * columns + i] = img.getSubimage(Game.TILES_DEFAULT_SIZE * i, Game.TILES_DEFAULT_SIZE * j, Game.TILES_DEFAULT_SIZE, Game.TILES_DEFAULT_SIZE);
@@ -38,7 +36,6 @@ public class LevelManager {
 	}
 	
 	public void draw(Graphics g, int xLvlOffset) {
-		System.out.println("LevelManager.draw(): xLvlOffset: " + xLvlOffset);
 		int xTilesOffset = xLvlOffset / Game.TILES_SIZE;
 		for (int j = 0; j < Game.TILES_IN_HEIGHT; j++) {
 			for (int i = 0 + xTilesOffset; i < Game.TILES_IN_WIDTH + xTilesOffset + 1; i++) {

@@ -28,7 +28,7 @@ public class Constants {
 		}
 		
 		public static class PauseOverlayConst {
-			public static final int BACKGROUND_YPOS = (int)(30 * Game.SCALE);
+			public static final int BACKGROUND_YPOS = (int)(225 * Game.SCALE);
 			public static final int BACKGROUND_XSIZE = (int)(258 * Game.SCALE);
 			public static final int BACKGROUND_YSIZE = (int)(389 * Game.SCALE);
 			
@@ -54,6 +54,19 @@ public class Constants {
 			
 		}
 		
+		public static class LvlCompletedOverlayConst {
+			public static final int BACKGROUND_YPOS = (int)(170 * Game.SCALE);
+			public static final int BACKGROUND_XSIZE = (int)(224 * Game.SCALE);
+			public static final int BACKGROUND_YSIZE = (int)(204 * Game.SCALE);
+			
+			public static final int URM_BUTTON_SIZE = (int)(56 * Game.SCALE);
+			public static final int NEXT_BUTTON_XPOS = (int)(473 * Game.SCALE);
+			public static final int NEXT_BUTTON_YPOS = (int)(215 * Game.SCALE);
+			public static final int MENU_BUTTON_XPOS = (int)(358 * Game.SCALE);
+			public static final int MENU_BUTTON_YPOS = (int)(215 * Game.SCALE);
+
+		}
+		
 		public static class MenuConst {
 			public static final int BACKGROUND_YPOS = (int)(45 * Game.SCALE);
 			public static final int BACKGROUND_XSIZE = (int)(282 * Game.SCALE);
@@ -73,32 +86,33 @@ public class Constants {
 		RIGHT
 	}
 	
-	public static class LevelData {
+	public static enum LvlDataId {
+		LVL1("/res/lvl1Data.png", TileAtlasId.DEFAULT);
+		
+		public final String filePath;
+		public final TileAtlasId tileAtlasId;
+		
+		LvlDataId(String filePath, TileAtlasId tileAtlasId) {
+			this.filePath = filePath;
+			this.tileAtlasId = tileAtlasId;
+		}
+		
+		public static enum TileAtlasId {
+			DEFAULT("/res/defaultTileAtlas.png", 12, 4, 11, 48); // filePath, columns, rows, nullTileIndex, maxSolidTileIndex
 			
-			static final Dimension[] LVL_IMG_DIMENSIONS = {new Dimension(0,0),
-											   			   new Dimension(12, 4) //1
-											   			   };
-			static final int[] LVL_NULL_TILE_INDEXES = {0, 
-														   11 //1
-														   };
-			static final int[] LVL_MAX_SOLID_TILES_INDEXES = {0,
-															  48 //1
-															  };
+			public final String filePath;
+			public final int xSize;
+			public final int ySize;
+			public final int nullTileIndex;
+			public final int maxSolidTileIndex;
 			
-		public static int GetLevelTilesImageRows(int lvlNumber) {
-			return LVL_IMG_DIMENSIONS[lvlNumber].height;
-		}
-		public static int GetLevelTilesImageColumns(int lvlNumber) {
-			return LVL_IMG_DIMENSIONS[lvlNumber].width;
-		}
-		public static int GetLevelTilesArraySize(int lvlNumber) {
-			return LVL_IMG_DIMENSIONS[lvlNumber].height * LVL_IMG_DIMENSIONS[lvlNumber].width;
-		}
-		public static int GetLevelNullTileIndex(int lvlNumber) {
-			return LVL_NULL_TILE_INDEXES[lvlNumber];
-		}
-		public static int GetLevelMaxSolidTilesIndex(int lvlNumber) {
-			return LVL_MAX_SOLID_TILES_INDEXES[lvlNumber];
+			TileAtlasId(String filePath, int xSize, int ySize, int nullTileIndex, int maxSolidTileIndex) {
+				this.filePath = filePath;
+				this.xSize = xSize;
+				this.ySize = ySize;
+				this.nullTileIndex = nullTileIndex;
+				this.maxSolidTileIndex = maxSolidTileIndex;
+			}
 		}
 	}
 	

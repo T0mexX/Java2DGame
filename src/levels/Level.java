@@ -1,40 +1,56 @@
 package levels;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 import main.Game;
 import structs.Rect;
+import utils.Constants.LvlDataId;
+import utils.LoadSave;
 
 public class Level {
 
+	private LvlDataId lvlDataId;
 	private int[][] lvlData;
 	private int nullTileIndex;
-	private int tilesArraySize;
+	private int tilesSpritesArraySize;
 	private int solidTilesMaxIndex;
 	private Vector<Rect> levelHitboxRects;
 	
 	
-	public Level(int[][] lvlData, int nullTileIndex, int tilesArraySize, int solidTilesMaxIndex) {
-		this.lvlData = lvlData;
-		this.nullTileIndex = nullTileIndex;
-		this.tilesArraySize = tilesArraySize;
-		this.solidTilesMaxIndex = solidTilesMaxIndex;
+	public Level(LvlDataId lvlDataId) {
+		this.lvlDataId = lvlDataId;
+		this.nullTileIndex = lvlDataId.tileAtlasId.nullTileIndex;
+		this.tilesSpritesArraySize = lvlDataId.tileAtlasId.xSize * lvlDataId.tileAtlasId.ySize;
+		this.solidTilesMaxIndex = lvlDataId.tileAtlasId.maxSolidTileIndex;
 		this.levelHitboxRects = new Vector<Rect>();
-		
+		loadLevelData();
+		loadTilesHitboxes();
+	}
+	
+	private void loadTilesHitboxes() {
 		for (int j = 0; j < lvlData.length; j++) {
 			for (int i = 0; i < lvlData[0].length; i++) {
 				if (lvlData[j][i] <= solidTilesMaxIndex && lvlData[j][i] != nullTileIndex) {
 					levelHitboxRects.add(new Rect(i * Game.TILES_SIZE, j * Game.TILES_SIZE, Game.TILES_SIZE, Game.TILES_SIZE));
-//System.out.println("newRect posX: " + levelHitboxRects.get(levelHitboxRects.size() - 1).pos.x);
-//System.out.println("newRect posY: " + levelHitboxRects.get(levelHitboxRects.size() - 1).pos.y);
-//System.out.println("newRect sizeX: " + levelHitboxRects.get(levelHitboxRects.size() - 1).size.x);
-//System.out.println("newRect sizeY: " + levelHitboxRects.get(levelHitboxRects.size() - 1).size.y);
 				}
 			}
 		}
-		
 	}
-	
+	private void loadLevelData() {
+		BufferedImage img = LoadSave.GetSpriteAtlas(lvlDataId.filePath);
+		lvlData = new int[img.getHeight()][img.getWidth()];
+		for (int j = 0; j < img.getHeight(); j++) {
+			for (int i = 0; i < img.getWidth(); i++) {
+				Color color = new Color(img.getRGB(i, j));
+				int value = color.getRed();
+				if (value >= tilesSpritesArraySize) 
+					value = nullTileIndex;
+				lvlData[j][i] = value;
+			}
+		}
+	}	
 	public int getSpriteIndex(int x, int y) {
 		return lvlData[y][x];
 	}
@@ -45,7 +61,7 @@ public class Level {
 		return nullTileIndex;
 	}
 	public int getTilesArraySize() {
-		return tilesArraySize;
+		return tilesSpritesArraySize;
 	}
 	public int getSolidTilesMaxIndex() {
 		return solidTilesMaxIndex;
