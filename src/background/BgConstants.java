@@ -10,7 +10,7 @@ import main.Game;
 public class BgConstants {
 	 
 	public enum BgBgEnum {
-		DEFAULT("/gameActiveBg.png");
+		DEFAULT("/res/gameActiveBg.png");
 		
 		public final BufferedImage image;
 		private BgBgEnum(String path) {
@@ -19,8 +19,8 @@ public class BgConstants {
 	}
 	
 	public enum BgEntityEnum {
-		SMALL_CLOUDS("/smallClouds.png"),
-		BIG_CLOUDS("/bigClouds.png");
+		SMALL_CLOUDS("/res/smallClouds.png"),
+		BIG_CLOUDS("/res/bigClouds.png");
 		
 		public final BufferedImage image;
 		
